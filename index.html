@@ -1,598 +1,2424 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Freight Compass — AI Decision Support for Raw-Material Shipping</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FreightCompass — SAIL Procurement</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
 <style>
-  :root{
-    --navy:#0B2545;
-    --navy-2:#123363;
-    --teal:#1C7293;
-    --amber:#D98A2B;
-    --amber-soft:#FBEAD3;
-    --coral:#C1502E;
-    --green:#2E7D5B;
-    --green-soft:#E4F1EA;
-    --bg:#F7F9FA;
-    --panel:#FFFFFF;
-    --line:#DFE6EB;
-    --ink:#0B2545;
-    --ink-soft:#5C6C7A;
-    --mono:'IBM Plex Mono', monospace;
-    --sans:'Inter', sans-serif;
-    --display:'Space Grotesk', sans-serif;
-  }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
-  body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:var(--sans);
-    line-height:1.55;
-    -webkit-font-smoothing:antialiased;
-  }
-  a{color:inherit; text-decoration:none;}
-  img,svg{display:block;}
-  .wrap{max-width:1180px; margin:0 auto; padding:0 32px;}
 
-  /* subtle grid texture on dark sections, evokes nautical chart */
-  .chart-texture{
-    background-image:
-      linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-    background-size:42px 42px;
+:root{
+  --ink:#24313d;
+  --panel:#141E27;
+  --panel-raised:#182430;
+  --line:#26343F;
+  --line-soft:#1D2A33;
+  --text:#E7EEF3;
+  --text-dim:#8FA3AF;
+  --text-faint:#6aa1c1;
+  --amber:#E8A33D;
+  --amber-dim:#3A2C15;
+  --teal:#4FB0A0;
+  --teal-dim:#132A26;
+  --steel:#6E93B7;
+  --steel-dim:#182634;
+  --red:#D9614F;
+}
+
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:
+    radial-gradient(1100px 500px at 15% -10%, #16222c 0%, transparent 60%),
+    var(--ink);
+  color:var(--text);
+  font-family:'IBM Plex Sans', system-ui, sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding:28px 18px 60px;
+}
+
+.mono{
+  font-family:'IBM Plex Mono', monospace;
+}
+
+.wrap{
+  max-width:1180px;
+  margin:0 auto;
+}
+
+/* ---------- Header ---------- */
+
+.hdr{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  padding-bottom:18px;
+  margin-bottom:22px;
+  border-bottom:1px solid var(--line);
+}
+
+.hdr h1{
+  font-size:22px;
+  font-weight:700;
+  letter-spacing:-0.01em;
+  margin:0 0 4px;
+}
+
+.hdr .meta{
+  font-size:11.5px;
+  color:var(--text-faint);
+}
+
+.hdr .tag{
+  font-size:11px;
+  color:var(--text-dim);
+  text-align:right;
+  line-height:1.5;
+}
+
+.hdr .tag b{
+  color:var(--text);
+  font-weight:600;
+}
+
+/* ---------- Route ---------- */
+
+.route{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:16px 20px;
+  margin-bottom:22px;
+}
+
+.route .port{
+  min-width:180px;
+  position:relative;
+}
+
+.route .port .code{
+  font-size:10.5px;
+  color:var(--text-faint);
+  letter-spacing:0.04em;
+  margin-bottom:4px;
+}
+
+.route .port.dest{
+  text-align:right;
+}
+
+.route .port input{
+  background:transparent;
+  color:var(--text);
+  border:none;
+  border-bottom:1px solid transparent;
+  font:inherit;
+  font-size:15px;
+  font-weight:600;
+  padding:2px 0 3px;
+  width:100%;
+}
+
+.route .port.dest input{
+  text-align:right;
+}
+
+.route .port input::placeholder{
+  color:var(--text-faint);
+  font-weight:400;
+}
+
+.route .port input:hover{
+  border-bottom-color:var(--line);
+}
+
+.route .port input:focus-visible{
+  outline:none;
+  border-bottom-color:var(--amber);
+}
+
+.route .line{
+  flex:1;
+  position:relative;
+  height:2px;
+  background:var(--line);
+  border-radius:1px;
+}
+
+.route .line::before,
+.route .line::after{
+  content:'';
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--text-faint);
+}
+
+.route .line::before{
+  left:-2px;
+}
+
+.route .line::after{
+  right:-2px;
+}
+
+.route .ship{
+  position:absolute;
+  top:50%;
+  left:38%;
+  transform:translate(-50%,-50%);
+  font-size:15px;
+  color:var(--amber);
+}
+
+.route .cargo{
+  min-width:150px;
+  text-align:center;
+  font-size:12px;
+  color:var(--text-dim);
+}
+
+.route .cargo b{
+  display:block;
+  color:var(--text);
+  font-size:13.5px;
+  font-weight:600;
+}
+
+/* ---------- Controls ---------- */
+
+.controls{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:14px 18px;
+  margin-bottom:22px;
+}
+
+.controls label{
+  font-size:11px;
+  color:var(--text-faint);
+  display:block;
+  margin-bottom:5px;
+}
+
+select{
+  background:var(--panel-raised);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:9px 12px;
+  font-size:13px;
+  font-family:inherit;
+  min-width:260px;
+  cursor:pointer;
+}
+
+select:focus-visible{
+  outline:2px solid var(--steel);
+  outline-offset:1px;
+}
+
+.tonnage-input{
+  background:var(--panel-raised);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:9px 12px;
+  font-size:13px;
+  font-family:inherit;
+  width:140px;
+}
+
+.tonnage-input:focus-visible{
+  outline:2px solid var(--steel);
+  outline-offset:1px;
+}
+
+/* ---------- Delivery Date ---------- */
+
+.delivery-date{
+  display:flex;
+  flex-direction:column;
+}
+
+.delivery-date label{
+  font-size:11px;
+  color:var(--text-faint);
+  display:block;
+  margin-bottom:5px;
+}
+
+.delivery-date input{
+  background:var(--panel-raised);
+  color:var(--text);
+  border:1px solid var(--line);
+  border-radius:7px;
+  padding:9px 12px;
+  font-size:13px;
+  font-family:inherit;
+}
+
+.delivery-date input:focus-visible{
+  outline:2px solid var(--steel);
+  outline-offset:1px;
+}
+
+.run-btn{
+  margin-left:auto;
+  background:var(--amber);
+  color:#1A1204;
+  border:none;
+  font-weight:600;
+  font-size:13.5px;
+  padding:11px 20px;
+  border-radius:7px;
+  cursor:pointer;
+}
+
+.run-btn:hover{
+  background:#f0ae4c;
+}
+
+/* ---------- Output ---------- */
+
+#output{
+  display:none;
+}
+
+#output.show{
+  display:block;
+}
+
+/* ---------- Recommendation Banner ---------- */
+
+.banner{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:20px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:22px 24px;
+  margin-bottom:18px;
+  border-left:4px solid var(--steel);
+  flex-wrap:wrap;
+}
+
+.banner .strategy{
+  font-size:11px;
+  color:var(--text-faint);
+  letter-spacing:0.03em;
+  margin-bottom:6px;
+}
+
+.banner .status{
+  font-size:24px;
+  font-weight:700;
+  letter-spacing:-0.01em;
+}
+
+/* ---------- Metrics ---------- */
+
+.metrics{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  min-width:390px;
+}
+
+.metric{
+  background:var(--panel-raised);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px 14px;
+  min-width:115px;
+}
+
+.metric-label{
+  font-size:10px;
+  color:var(--text-faint);
+  letter-spacing:0.04em;
+  margin-bottom:4px;
+}
+
+.metric-value{
+  font:600 16px 'IBM Plex Mono',monospace;
+  color:var(--text);
+}
+
+.risk-high{
+  color:var(--red);
+}
+
+.risk-medium{
+  color:var(--amber);
+}
+
+.risk-low{
+  color:var(--teal);
+}
+
+/* ---------- Main Grid ---------- */
+
+.grid2{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+.panel{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:20px 22px;
+}
+
+.panel h3{
+  font-size:13px;
+  font-weight:600;
+  margin:0 0 14px;
+  padding-bottom:10px;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--text-dim);
+}
+
+/* ---------- Drivers ---------- */
+
+.driver{
+  display:flex;
+  gap:11px;
+  align-items:flex-start;
+  padding:9px 0;
+  border-bottom:1px solid var(--line-soft);
+  font-size:13px;
+  line-height:1.5;
+}
+
+.driver:last-child{
+  border-bottom:none;
+}
+
+.driver .dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  margin-top:6px;
+  flex-shrink:0;
+}
+
+.driver b{
+  color:var(--text);
+  font-weight:600;
+}
+
+.driver span{
+  color:var(--text-dim);
+}
+
+/* ---------- Extra Panels ---------- */
+
+.mini-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-bottom:18px;
+}
+
+/* ---------- East Coast Risk ---------- */
+
+.risk-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:9px 0;
+  border-bottom:1px solid var(--line-soft);
+  font-size:12.5px;
+}
+
+.risk-row:last-child{
+  border-bottom:none;
+}
+
+.risk-name{
+  color:var(--text-dim);
+}
+
+.risk-value{
+  font:600 11px 'IBM Plex Mono',monospace;
+}
+
+.risk-note{
+  font-size:11px;
+  color:var(--text-faint);
+  margin-top:10px;
+  line-height:1.45;
+}
+
+/* ---------- Annual Allocation ---------- */
+
+.allocation{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:5px;
+}
+
+.alloc-item{
+  padding:10px;
+  background:var(--panel-raised);
+  border:1px solid var(--line);
+  border-radius:7px;
+}
+
+.alloc-head{
+  display:flex;
+  justify-content:space-between;
+  font-size:11px;
+  color:var(--text-dim);
+  margin-bottom:7px;
+}
+
+.alloc-head b{
+  color:var(--text);
+}
+
+.alloc-bar{
+  height:6px;
+  background:var(--line);
+  border-radius:4px;
+  overflow:hidden;
+}
+
+.alloc-fill{
+  height:100%;
+  background:var(--steel);
+  border-radius:4px;
+}
+
+/* ---------- Action ---------- */
+
+.action{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:18px;
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px 22px;
+  margin-bottom:18px;
+  flex-wrap:wrap;
+}
+
+.action h4{
+  font-size:14.5px;
+  font-weight:600;
+  margin:0 0 4px;
+}
+
+.action p{
+  font-size:12px;
+  color:var(--text-dim);
+  margin:0;
+}
+
+.action .btns{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  border:none;
+  border-radius:7px;
+  padding:10px 16px;
+  font-size:13px;
+  font-weight:600;
+  cursor:pointer;
+}
+
+.btn:hover{
+  filter:brightness(1.1);
+}
+
+.btn-primary{
+  background:var(--amber);
+  color:#1A1204;
+}
+
+.btn-secondary{
+  background:var(--panel-raised);
+  color:var(--text);
+  border:1px solid var(--line);
+}
+
+/* ---------- Ledger ---------- */
+
+.ledger h3{
+  font-size:13px;
+  font-weight:600;
+  margin:0 0 2px;
+  color:var(--text-dim);
+}
+
+.ledger .sub{
+  font-size:11px;
+  color:var(--text-faint);
+  margin-bottom:14px;
+}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:12px;
+}
+
+thead th{
+  text-align:left;
+  font-weight:500;
+  color:var(--text-faint);
+  font-size:10.5px;
+  letter-spacing:0.03em;
+  padding:0 10px 8px;
+  border-bottom:1px solid var(--line);
+}
+
+tbody td{
+  padding:10px;
+  border-bottom:1px solid var(--line-soft);
+  color:var(--text-dim);
+}
+
+tbody tr:last-child td{
+  border-bottom:none;
+}
+
+tbody tr.new-row{
+  background:rgba(232,163,61,0.06);
+}
+
+.status-pill{
+  font-size:10.5px;
+  font-weight:600;
+  padding:3px 9px;
+  border-radius:20px;
+  display:inline-block;
+}
+
+.status-confirmed{
+  background:var(--teal-dim);
+  color:var(--teal);
+}
+
+.status-monitoring{
+  background:var(--steel-dim);
+  color:var(--steel);
+}
+
+.status-overridden{
+  background:var(--amber-dim);
+  color:var(--amber);
+}
+
+/* ---------- Learning ---------- */
+
+.learning{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-top:12px;
+  padding:12px 14px;
+  background:var(--panel-raised);
+  border:1px solid var(--line);
+  border-radius:8px;
+}
+
+.learning-title{
+  font-size:11px;
+  color:var(--text-faint);
+  margin-bottom:4px;
+  letter-spacing:0.03em;
+}
+
+.learning-main{
+  font-size:12.5px;
+  color:var(--text);
+}
+
+.learning-main b{
+  font-family:'IBM Plex Mono',monospace;
+}
+
+.learning-badge{
+  font-size:10.5px;
+  font-weight:600;
+  padding:4px 9px;
+  border-radius:20px;
+  background:var(--teal-dim);
+  color:var(--teal);
+  white-space:nowrap;
+}
+
+/* ---------- Toast ---------- */
+
+#toast{
+  position:fixed;
+  bottom:24px;
+  left:50%;
+  transform:translate(-50%, 20px);
+  background:var(--panel-raised);
+  border:1px solid var(--line);
+  color:var(--text);
+  padding:13px 20px;
+  border-radius:8px;
+  font-size:13px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  opacity:0;
+  pointer-events:none;
+  transition:all .25s ease;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  z-index:50;
+}
+
+#toast.show{
+  opacity:1;
+  transform:translate(-50%, 0);
+}
+
+#toast .dot{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--teal);
+}
+
+/* ---------- Responsive ---------- */
+
+@media(max-width:840px){
+
+  .grid2{
+    grid-template-columns:1fr;
   }
 
-  /* ---------- NAV ---------- */
-  nav{
-    position:sticky; top:0; z-index:40;
-    background:rgba(247,249,250,0.9);
-    backdrop-filter:blur(8px);
-    border-bottom:1px solid var(--line);
-  }
-  nav .wrap{
-    display:flex; align-items:center; justify-content:space-between;
-    height:68px;
-  }
-  .brand{display:flex; align-items:center; gap:10px; font-family:var(--display); font-weight:700; font-size:19px; letter-spacing:-0.01em;}
-  .brand .mark{
-    width:30px; height:30px; border-radius:50%;
-    background:conic-gradient(from 220deg, var(--navy), var(--teal), var(--amber), var(--navy));
-    position:relative;
-  }
-  .brand .mark::after{
-    content:''; position:absolute; inset:8px; background:var(--bg); border-radius:50%;
-  }
-  .navlinks{display:flex; gap:34px; font-size:14.5px; font-weight:500; color:var(--ink-soft);}
-  .navlinks a:hover{color:var(--navy);}
-  .navcta{
-    background:var(--navy); color:#fff; padding:10px 20px; border-radius:8px;
-    font-size:14px; font-weight:600;
-  }
-  .navcta:hover{background:var(--navy-2);}
-  @media(max-width:820px){ .navlinks{display:none;} }
-
-  /* ---------- HERO / LIVE DEMO ---------- */
-  header.hero{
-    background:var(--navy); color:#fff; position:relative; overflow:hidden;
-    padding:64px 0 88px;
-  }
-  header.hero::before{
-    content:''; position:absolute; inset:0;
-    background-image:linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-    background-size:46px 46px;
-    mask-image:radial-gradient(ellipse 80% 60% at 50% 0%, black 40%, transparent 100%);
-  }
-  .hero-inner{position:relative; z-index:2;}
-  .hero-top{max-width:680px; margin-bottom:44px;}
-  .kicker{
-    font-family:var(--mono); font-size:12.5px; color:#8FADC0; letter-spacing:0.04em;
-    margin-bottom:16px;
-  }
-  h1.hero-title{
-    font-family:var(--display); font-weight:700; font-size:clamp(34px, 5vw, 54px);
-    line-height:1.08; letter-spacing:-0.015em; margin-bottom:18px;
-  }
-  .hero-title .accent{color:var(--amber);}
-  .hero-sub{font-size:17px; color:#C4D6E2; max-width:560px;}
-
-  /* Instrument panel */
-  .panel{
-    background:#0E2D53; border:1px solid #21456F; border-radius:16px;
-    box-shadow:0 30px 60px -20px rgba(0,0,0,0.5);
-    overflow:hidden;
-  }
-  .panel-head{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:18px 24px; border-bottom:1px solid #1D3E66;
-  }
-  .panel-head .dots{display:flex; gap:6px;}
-  .panel-head .dots span{width:9px; height:9px; border-radius:50%; background:#2A527E;}
-  .panel-head .label{font-family:var(--mono); font-size:12px; color:#7FA0BC; letter-spacing:0.03em;}
-  .panel-body{padding:28px;}
-  @media(max-width:600px){ .panel-body{padding:20px;} }
-
-  .field-grid{
-    display:grid; grid-template-columns:repeat(4, 1fr); gap:16px; margin-bottom:26px;
-  }
-  @media(max-width:900px){ .field-grid{grid-template-columns:repeat(2,1fr);} }
-  .field label{
-    display:block; font-family:var(--mono); font-size:11px; color:#7FA0BC;
-    letter-spacing:0.03em; margin-bottom:8px;
-  }
-  .field select, .field input{
-    width:100%; background:#123363; border:1px solid #285585; color:#fff;
-    padding:11px 12px; border-radius:8px; font-family:var(--sans); font-size:14px;
-    appearance:none;
-  }
-  .field select:focus, .field input:focus{outline:2px solid var(--amber); outline-offset:1px;}
-
-  .run-row{display:flex; align-items:center; gap:16px; margin-bottom:28px;}
-  .run-btn{
-    background:var(--amber); color:#26170A; border:none; font-family:var(--sans);
-    font-weight:700; font-size:14.5px; padding:13px 26px; border-radius:8px; cursor:pointer;
-    transition:transform .15s ease, background .15s ease;
-  }
-  .run-btn:hover{background:#E39A3F;}
-  .run-btn:active{transform:scale(0.97);}
-  .run-hint{font-size:13px; color:#7FA0BC;}
-
-  .result{
-    display:grid; grid-template-columns:1.3fr 1fr 1fr 1fr; gap:16px;
-    opacity:0; transform:translateY(6px);
-    transition:opacity .45s ease, transform .45s ease;
-  }
-  .result.show{opacity:1; transform:translateY(0);}
-  @media(max-width:900px){ .result{grid-template-columns:1fr 1fr;} }
-
-  .rec-card{
-    background:linear-gradient(135deg, #3A2B10, #241a0a);
-    border:1px solid #6B4A1C;
-    border-radius:12px; padding:20px;
-  }
-  .rec-eyebrow{font-family:var(--mono); font-size:11px; color:#E3AE5E; letter-spacing:0.03em; margin-bottom:10px;}
-  .rec-value{font-family:var(--display); font-weight:700; font-size:24px; color:var(--amber); margin-bottom:6px;}
-  .rec-detail{font-size:13px; color:#D9BE8F;}
-
-  .stat-card{
-    background:#123363; border:1px solid #285585; border-radius:12px; padding:20px;
-    display:flex; flex-direction:column; justify-content:center;
-  }
-  .stat-label{font-family:var(--mono); font-size:11px; color:#7FA0BC; letter-spacing:0.03em; margin-bottom:10px;}
-  .stat-value{font-family:var(--display); font-weight:700; font-size:22px;}
-  .stat-value.risk-low{color:#6FCF9E;}
-  .stat-value.risk-med{color:var(--amber);}
-  .stat-value.risk-high{color:#EF7A63;}
-
-  .why-box{
-    grid-column:1 / -1;
-    background:#0E2D53; border:1px dashed #285585; border-radius:12px; padding:18px 20px;
-    margin-top:4px;
-  }
-  .why-title{font-family:var(--mono); font-size:11px; color:#7FA0BC; letter-spacing:0.03em; margin-bottom:10px;}
-  .why-list{list-style:none; display:flex; flex-direction:column; gap:6px;}
-  .why-list li{font-size:13.5px; color:#D6E4EC; display:flex; gap:8px;}
-  .why-list li .sig{font-family:var(--mono); color:var(--amber); min-width:18px;}
-
-  /* ---------- PROBLEM ---------- */
-  section.problem{padding:88px 0 72px;}
-  .section-head{max-width:640px; margin-bottom:48px;}
-  .section-kicker{font-family:var(--mono); font-size:12.5px; color:var(--teal); letter-spacing:0.03em; margin-bottom:14px;}
-  .section-title{font-family:var(--display); font-weight:700; font-size:clamp(26px,3.4vw,36px); letter-spacing:-0.01em; color:var(--navy);}
-
-  .problem-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:20px;}
-  @media(max-width:900px){ .problem-grid{grid-template-columns:1fr 1fr;} }
-  @media(max-width:560px){ .problem-grid{grid-template-columns:1fr;} }
-  .p-card{
-    background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:24px;
-  }
-  .p-num{font-family:var(--mono); font-size:13px; color:var(--ink-soft); margin-bottom:16px;}
-  .p-card h3{font-family:var(--display); font-size:17px; margin-bottom:10px;}
-  .p-card p{font-size:13.5px; color:var(--ink-soft);}
-
-  /* ---------- SOLUTION FLOW ---------- */
-  section.flow{background:var(--panel); padding:88px 0; border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
-  .flow-row{display:grid; grid-template-columns:repeat(4,1fr); gap:0; position:relative;}
-  @media(max-width:900px){ .flow-row{grid-template-columns:1fr; gap:18px;} }
-  .flow-step{position:relative; padding:0 20px 0 0;}
-  .flow-step:not(:last-child)::after{
-    content:'→'; position:absolute; right:-2px; top:14px; color:var(--line); font-size:20px;
-  }
-  @media(max-width:900px){ .flow-step:not(:last-child)::after{display:none;} }
-  .flow-tag{
-    display:inline-block; font-family:var(--mono); font-size:11px; color:var(--teal);
-    background:#EAF4F7; padding:4px 9px; border-radius:5px; margin-bottom:14px;
-  }
-  .flow-step h4{font-family:var(--display); font-size:16.5px; margin-bottom:8px;}
-  .flow-step p{font-size:13px; color:var(--ink-soft);}
-
-  /* ---------- IMPACT STAT ---------- */
-  section.impact{padding:88px 0;}
-  .impact-box{
-    background:var(--navy); border-radius:16px; padding:56px; color:#fff;
-    display:grid; grid-template-columns:auto 1fr; gap:56px; align-items:center;
-  }
-  @media(max-width:820px){ .impact-box{grid-template-columns:1fr; gap:28px; padding:36px;} }
-  .impact-num{font-family:var(--display); font-weight:700; font-size:88px; color:var(--amber); line-height:1;}
-  .impact-num-label{font-family:var(--mono); font-size:12.5px; color:#8FADC0; margin-top:10px;}
-  .impact-text{font-family:var(--display); font-size:22px; line-height:1.4; max-width:520px;}
-  .impact-foot{font-size:12.5px; color:#8FADC0; margin-top:14px;}
-
-  /* ---------- COMPARISON ---------- */
-  section.compare{padding:0 0 96px;}
-  table.cmp{width:100%; border-collapse:collapse; background:var(--panel); border-radius:12px; overflow:hidden; border:1px solid var(--line);}
-  table.cmp th, table.cmp td{padding:16px 20px; text-align:left; font-size:14px; border-bottom:1px solid var(--line);}
-  table.cmp th{font-family:var(--mono); font-size:11.5px; letter-spacing:0.03em; color:var(--ink-soft); background:#F2F5F7;}
-  table.cmp td:first-child{font-weight:600; color:var(--navy);}
-  table.cmp tr:last-child td{border-bottom:none;}
-  table.cmp td.us{background:var(--green-soft); color:var(--green); font-weight:500;}
-  @media(max-width:700px){
-    table.cmp, table.cmp thead, table.cmp tbody, table.cmp th, table.cmp td, table.cmp tr{display:block;}
-    table.cmp thead{display:none;}
-    table.cmp tr{border-bottom:1px solid var(--line); padding:14px 0;}
-    table.cmp td{border:none; padding:4px 20px;}
+  .mini-grid{
+    grid-template-columns:1fr;
   }
 
-  /* ---------- STACK ---------- */
-  section.stack{background:var(--panel); padding:88px 0; border-top:1px solid var(--line);}
-  .stack-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px;}
-  @media(max-width:820px){ .stack-grid{grid-template-columns:1fr 1fr;} }
-  @media(max-width:560px){ .stack-grid{grid-template-columns:1fr;} }
-  .stack-card{border:1px solid var(--line); border-radius:12px; padding:20px; position:relative; overflow:hidden;}
-  .stack-card::before{content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--bar-color, var(--teal));}
-  .stack-label{font-family:var(--mono); font-size:11px; color:var(--ink-soft); letter-spacing:0.03em; margin-bottom:10px;}
-  .stack-val{font-family:var(--display); font-weight:600; font-size:18px; margin-bottom:8px;}
-  .stack-desc{font-size:12.5px; color:var(--ink-soft);}
+  .metrics{
+    min-width:100%;
+  }
 
-  /* ---------- FOOTER ---------- */
-  footer{background:var(--navy); color:#8FADC0; padding:40px 0;}
-  footer .wrap{display:flex; justify-content:space-between; align-items:center; font-size:13px;}
-  @media(max-width:600px){ footer .wrap{flex-direction:column; gap:10px; text-align:center;} }
+}
+
+@media(max-width:560px){
+
+  .metrics{
+    grid-template-columns:1fr;
+  }
+
+  .allocation{
+    grid-template-columns:1fr;
+  }
+
+}
+
 </style>
 </head>
+
 <body>
 
-<nav>
-  <div class="wrap">
-    <div class="brand"><span class="mark"></span>Freight Compass</div>
-    <div class="navlinks">
-      <a href="#demo">Live demo</a>
-      <a href="#problem">Problem</a>
-      <a href="#flow">How it works</a>
-      <a href="#stack">Tech</a>
-    </div>
-    <a class="navcta" href="#demo">Try the demo</a>
-  </div>
-</nav>
+<div class="wrap">
 
-<header class="hero" id="demo">
-  <div class="wrap hero-inner">
-    <div class="hero-top">
-      <div class="kicker">SMART INDIA HACKATHON 2026 · PS 26006 · TEAM STACKED BRAINERS</div>
-      <h1 class="hero-title">Every shipment decision, <span class="accent">explained before it's booked.</span></h1>
-      <p class="hero-sub">SAIL moves raw material across oceans on guesswork and rushed calls. Freight Compass turns freight rates, vessel data, and port conditions into one clear booking recommendation — with the reasoning attached. Enter a shipment below and see it work.</p>
+<!-- HEADER -->
+
+<div class="hdr">
+
+  <div>
+
+    <h1>FreightCompass</h1>
+
+    <div class="meta">
+      SIH 2026 · Problem ID SIH26006 · Team Stacked Brainers
     </div>
+
+  </div>
+
+  <div class="tag">
+    SAIL Procurement Portal<br>
+    <b>Freight Strategy Advisory</b>
+  </div>
+
+</div>
+
+
+<!-- ROUTE -->
+
+<div class="route">
+
+  <div class="port">
+
+    <div class="code mono">
+      ORIGIN — type or pick
+    </div>
+
+    <input
+      type="text"
+      id="originSelect"
+      list="originList"
+      oninput="updateRoute()"
+      placeholder="e.g. AU · Newcastle"
+    >
+
+    <datalist id="originList"></datalist>
+
+  </div>
+
+
+  <div class="line">
+    <span class="ship">▶</span>
+  </div>
+
+
+  <div class="cargo">
+
+    Coking Coal
+
+    <b class="mono">
+      75,000 MT
+    </b>
+
+  </div>
+
+
+  <div class="line">
+    <span class="ship">▶</span>
+  </div>
+
+
+  <div class="port dest">
+
+    <div class="code mono">
+      DESTINATION — type or pick
+    </div>
+
+    <input
+      type="text"
+      id="destSelect"
+      list="destList"
+      oninput="updateRoute()"
+      placeholder="e.g. IN · Dhamra"
+    >
+
+    <datalist id="destList"></datalist>
+
+  </div>
+
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="controls">
+
+  <div>
+
+    <label for="vesselSelect">
+      Vessel / deck class
+    </label>
+
+    <select id="vesselSelect" onchange="updateRoute()">
+
+      <option value="Capesize">
+        Capesize (~180,000 DWT)
+      </option>
+
+      <option value="Panamax">
+        Panamax (~80,000 DWT)
+      </option>
+
+      <option value="Supramax">
+        Supramax (~58,000 DWT)
+      </option>
+
+      <option value="Handymax">
+        Handymax (~45,000 DWT)
+      </option>
+
+      <option value="Handysize">
+        Handysize (~30,000 DWT)
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <div>
+
+    <label for="tonnageInput">
+      Cargo tonnage
+    </label>
+
+    <input
+      type="text"
+      id="tonnageInput"
+      value="75,000 MT"
+      oninput="updateRoute()"
+      class="tonnage-input"
+    >
+
+  </div>
+
+
+  <!-- NEW DELIVERY DATE -->
+
+  <div class="delivery-date">
+
+    <label for="deliveryDate">
+      Delivery date
+    </label>
+
+    <input
+      type="date"
+      id="deliveryDate"
+    >
+
+  </div>
+
+
+  <div>
+
+    <label for="scenarioSelect">
+      Market scenario (demo input)
+    </label>
+
+    <select id="scenarioSelect">
+
+      <option value="WAIT">
+        Scenario 1 — Prices trending down
+      </option>
+
+      <option value="LOCK">
+        Scenario 2 — Prices trending up
+      </option>
+
+      <option value="PARTIAL">
+        Scenario 3 — High volatility
+      </option>
+
+    </select>
+
+  </div>
+
+
+  <button
+    class="run-btn"
+    onclick="runAnalysis()"
+  >
+    Run AI Analysis
+  </button>
+
+</div>
+
+
+<!-- OUTPUT -->
+
+<div id="output">
+
+
+  <!-- AI RESULT -->
+
+  <div class="banner">
+
+    <div>
+
+      <div class="strategy mono">
+        AI RECOMMENDATION
+      </div>
+
+      <div
+        class="status"
+        id="statusText">
+      </div>
+
+    </div>
+
+
+    <!-- COST / RISK / CONFIDENCE -->
+
+    <div class="metrics">
+
+      <div class="metric">
+
+        <div class="metric-label">
+          COST
+        </div>
+
+        <div
+          class="metric-value"
+          id="costVal">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="metric">
+
+        <div class="metric-label">
+          DOWNSIDE RISK
+        </div>
+
+        <div
+          class="metric-value"
+          id="riskVal">
+          —
+        </div>
+
+      </div>
+
+
+      <div class="metric">
+
+        <div class="metric-label">
+          CONFIDENCE
+        </div>
+
+        <div
+          class="metric-value"
+          id="confidenceVal">
+          —
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <!-- DRIVERS + CHART -->
+
+  <div class="grid2">
+
 
     <div class="panel">
-      <div class="panel-head">
-        <div class="dots"><span></span><span></span><span></span></div>
-        <div class="label">BOOKING RECOMMENDATION ENGINE</div>
-      </div>
-      <div class="panel-body">
-        <div class="field-grid">
-          <div class="field">
-            <label for="origin">Origin port</label>
-            <select id="origin">
-              <option>Port Hedland, Australia</option>
-              <option>Richards Bay, South Africa</option>
-              <option>Tubarão, Brazil</option>
-              <option>Gladstone, Australia</option>
-            </select>
+
+      <h3>
+        Why the model recommends this
+      </h3>
+
+      <div id="driversList"></div>
+
+    </div>
+
+
+    <div class="panel">
+
+      <h3>
+        Freight cost forecast ($ / ton)
+      </h3>
+
+      <canvas
+        id="rateChart"
+        height="170">
+      </canvas>
+
+    </div>
+
+  </div>
+
+
+  <!-- NEW RISK + ANNUAL PLAN -->
+
+  <div class="mini-grid">
+
+
+    <!-- EAST COAST RISK -->
+
+    <div class="panel">
+
+      <h3>
+        East Coast risk monitor
+      </h3>
+
+      <div id="riskPanel"></div>
+
+    </div>
+
+
+    <!-- ANNUAL ALLOCATION -->
+
+    <div class="panel">
+
+      <h3>
+        Annual freight allocation
+      </h3>
+
+      <div class="allocation">
+
+
+        <div class="alloc-item">
+
+          <div class="alloc-head">
+
+            <span>
+              Fixed
+            </span>
+
+            <b>
+              60%
+            </b>
+
           </div>
-          <div class="field">
-            <label for="dest">Destination</label>
-            <select id="dest">
-              <option>Paradip Port → Rourkela</option>
-              <option>Visakhapatnam → Bhilai</option>
-              <option>Haldia → Durgapur</option>
-            </select>
+
+          <div class="alloc-bar">
+
+            <div
+              class="alloc-fill"
+              style="width:60%">
+            </div>
+
           </div>
-          <div class="field">
-            <label for="cargo">Cargo</label>
-            <select id="cargo">
-              <option>Iron ore, 60,000 MT</option>
-              <option>Coking coal, 55,000 MT</option>
-              <option>Limestone, 40,000 MT</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="window">Delivery window</label>
-            <select id="window">
-              <option>Within 2 weeks</option>
-              <option>Within 4 weeks</option>
-              <option>Within 8 weeks</option>
-            </select>
-          </div>
+
         </div>
 
-        <div class="run-row">
-          <button class="run-btn" id="runBtn">Get recommendation</button>
-          <span class="run-hint" id="runHint">Runs the decision engine on current market signals</span>
+
+        <div class="alloc-item">
+
+          <div class="alloc-head">
+
+            <span>
+              Quarterly
+            </span>
+
+            <b>
+              25%
+            </b>
+
+          </div>
+
+          <div class="alloc-bar">
+
+            <div
+              class="alloc-fill"
+              style="width:25%">
+            </div>
+
+          </div>
+
         </div>
 
-        <div class="result" id="result">
-          <div class="rec-card">
-            <div class="rec-eyebrow">RECOMMENDATION</div>
-            <div class="rec-value" id="recValue">—</div>
-            <div class="rec-detail" id="recDetail">—</div>
+
+        <div class="alloc-item">
+
+          <div class="alloc-head">
+
+            <span>
+              Spot
+            </span>
+
+            <b>
+              15%
+            </b>
+
           </div>
-          <div class="stat-card">
-            <div class="stat-label">EXPECTED COST</div>
-            <div class="stat-value" id="statCost">—</div>
+
+          <div class="alloc-bar">
+
+            <div
+              class="alloc-fill"
+              style="width:15%">
+            </div>
+
           </div>
-          <div class="stat-card">
-            <div class="stat-label">DOWNSIDE RISK</div>
-            <div class="stat-value" id="statRisk">—</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">CONFIDENCE</div>
-            <div class="stat-value" id="statConf">—</div>
-          </div>
-          <div class="why-box">
-            <div class="why-title">WHY THIS CALL</div>
-            <ul class="why-list" id="whyList"></ul>
-          </div>
+
         </div>
-      </div>
-    </div>
-  </div>
-</header>
 
-<section class="problem" id="problem">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-kicker">THE PROBLEM</div>
-      <h2 class="section-title">SAIL books ocean freight with limited visibility into what's actually driving the price.</h2>
-    </div>
-    <div class="problem-grid">
-      <div class="p-card">
-        <div class="p-num">01</div>
-        <h3>Unpredictable cost</h3>
-        <p>Spot prices, bunker fuel, and port congestion move independently — and often against each other.</p>
       </div>
-      <div class="p-card">
-        <div class="p-num">02</div>
-        <h3>Poor vessel choice</h3>
-        <p>Availability, draft restrictions, and berth compatibility rule out ships after time is already spent evaluating them.</p>
-      </div>
-      <div class="p-card">
-        <div class="p-num">03</div>
-        <h3>Rush booking</h3>
-        <p>Late decisions default to premium pricing, demurrage exposure, and delivery slippage.</p>
-      </div>
-      <div class="p-card">
-        <div class="p-num">04</div>
-        <h3>Uncertain calls</h3>
-        <p>Too many variables move at once for a booking manager to weigh by hand, every time, at scale.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="flow" id="flow">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-kicker">HOW IT WORKS</div>
-      <h2 class="section-title">From a shipment request to an approved booking, in four steps.</h2>
-    </div>
-    <div class="flow-row">
-      <div class="flow-step">
-        <span class="flow-tag">INPUT</span>
-        <h4>Read the market</h4>
-        <p>Demand, vessel availability, freight & fuel indices, port and geopolitical conditions.</p>
-      </div>
-      <div class="flow-step">
-        <span class="flow-tag">ANALYZE</span>
-        <h4>Score the options</h4>
-        <p>Price trend direction, vessel fit, port constraints, seasonal risk — computed together, not in isolation.</p>
-      </div>
-      <div class="flow-step">
-        <span class="flow-tag">DECIDE</span>
-        <h4>Recommend a position</h4>
-        <p>Lock now, wait, or partial-lock — with the timing that minimizes downside.</p>
-      </div>
-      <div class="flow-step">
-        <span class="flow-tag">EXPLAIN</span>
-        <h4>Show the reasoning</h4>
-        <p>Expected cost, downside risk, confidence, and the specific signals behind the call.</p>
-      </div>
-    </div>
-  </div>
-</section>
 
-<section class="impact">
-  <div class="wrap">
-    <div class="impact-box">
-      <div>
-        <div class="impact-num">2–3%</div>
-        <div class="impact-num-label">BOOKING EFFICIENCY GAIN</div>
-      </div>
-      <div>
-        <p class="impact-text">Even a modest 2–3% improvement in booking timing on SAIL's raw-material import spend could save hundreds of crores annually.</p>
-        <p class="impact-foot">Estimate based on SAIL's cost of materials consumed, FY 2024–25.</p>
-      </div>
-    </div>
-  </div>
-</section>
+      <div class="risk-note">
 
-<section class="compare">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-kicker">WHY IT'S DIFFERENT</div>
-      <h2 class="section-title">One explainable platform, not another fragmented tool.</h2>
+        Recommended mix keeps a controlled portion flexible
+        for market opportunities.
+
+      </div>
+
     </div>
-    <table class="cmp">
+
+  </div>
+
+
+  <!-- HUMAN APPROVAL -->
+
+  <div class="action">
+
+    <div>
+
+      <h4 id="actionHeading"></h4>
+
+      <p id="actionDesc"></p>
+
+    </div>
+
+    <div
+      class="btns"
+      id="actionButtons">
+    </div>
+
+  </div>
+
+
+  <!-- AUDIT TRAIL -->
+
+  <div class="panel ledger">
+
+    <h3>
+      Auditable decision trail
+    </h3>
+
+    <div class="sub">
+
+      Every recommendation and manager action is logged
+      for procurement compliance.
+
+    </div>
+
+
+    <table>
+
       <thead>
-        <tr><th></th><th>Traditional approach</th><th>Freight Compass</th></tr>
+
+        <tr>
+
+          <th>
+            Time
+          </th>
+
+          <th>
+            Shipment ID
+          </th>
+
+          <th>
+            AI strategy
+          </th>
+
+          <th>
+            Action taken
+          </th>
+
+          <th>
+            Status
+          </th>
+
+        </tr>
+
       </thead>
-      <tbody>
-        <tr><td>Data</td><td>Scattered across emails, spreadsheets, broker calls</td><td class="us">One integrated platform</td></tr>
-        <tr><td>Decision basis</td><td>Manager's experience and guesswork</td><td class="us">AI analysis on real market data</td></tr>
-        <tr><td>Reasoning</td><td>Not documented</td><td class="us">Explainable — every call has a reason</td></tr>
-        <tr><td>Timing</td><td>Reactive, often rushed</td><td class="us">Proactive Lock / Wait / Partial-lock guidance</td></tr>
-        <tr><td>Auditability</td><td>Hard to trace after the fact</td><td class="us">Fully logged and traceable</td></tr>
+
+
+      <tbody id="auditTable">
+
+        <tr>
+
+          <td class="mono">
+            09:30 AM
+          </td>
+
+          <td class="mono">
+            SH-2026-088
+          </td>
+
+          <td style="color:var(--text);font-weight:600;">
+            LOCK NOW
+          </td>
+
+          <td style="color:var(--text);">
+            Manager sign-off
+          </td>
+
+          <td>
+            <span class="status-pill status-confirmed">
+              Confirmed
+            </span>
+          </td>
+
+        </tr>
+
       </tbody>
+
     </table>
-  </div>
-</section>
 
-<section class="stack" id="stack">
-  <div class="wrap">
-    <div class="section-head">
-      <div class="section-kicker">TECH STACK</div>
-      <h2 class="section-title">Built on proven, production-ready components.</h2>
-    </div>
-    <div class="stack-grid">
-      <div class="stack-card" style="--bar-color:#1C7293"><div class="stack-label">FRONTEND</div><div class="stack-val">React.js</div><div class="stack-desc">Booking recommendation dashboard</div></div>
-      <div class="stack-card" style="--bar-color:#0B2545"><div class="stack-label">BACKEND</div><div class="stack-val">Python + FastAPI</div><div class="stack-desc">Core decision logic & API layer</div></div>
-      <div class="stack-card" style="--bar-color:#D98A2B"><div class="stack-label">DATABASE</div><div class="stack-val">PostgreSQL</div><div class="stack-desc">Freight rates, vessel data, history</div></div>
-      <div class="stack-card" style="--bar-color:#C1502E"><div class="stack-label">FORECASTING</div><div class="stack-val">XGBoost / Prophet</div><div class="stack-desc">Predicts freight price trends</div></div>
-      <div class="stack-card" style="--bar-color:#2E7D5B"><div class="stack-label">OPTIMIZATION</div><div class="stack-val">Google OR-Tools</div><div class="stack-desc">Lock / Wait / Partial-lock engine</div></div>
-      <div class="stack-card" style="--bar-color:#123363"><div class="stack-label">EXPLAINABILITY</div><div class="stack-val">SHAP</div><div class="stack-desc">Generates the "why" behind each call</div></div>
-    </div>
-  </div>
-</section>
 
-<footer>
-  <div class="wrap">
-    <span>Freight Compass — Team Stacked Brainers</span>
-    <span>Smart India Hackathon 2026 · PS 26006</span>
+    <!-- LEARNING FEEDBACK -->
+
+    <div class="learning">
+
+      <div>
+
+        <div class="learning-title">
+          LEARN FROM RESULTS
+        </div>
+
+        <div class="learning-main">
+
+          Predicted
+          <b id="predictedRate">
+            $12.90/t
+          </b>
+
+          · Actual
+
+          <b id="actualRate">
+            —
+          </b>
+
+          · Variance
+
+          <b id="varianceRate">
+            —
+          </b>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="learning-badge"
+        id="learningBadge">
+
+        Awaiting booking
+
+      </div>
+
+    </div>
+
   </div>
-</footer>
+
+</div>
+
+</div>
+
+
+<!-- TOAST -->
+
+<div id="toast">
+
+  <span class="dot"></span>
+
+  <span id="toastMsg"></span>
+
+</div>
+
 
 <script>
-  // Deterministic-feeling but varied rule-based "AI" demo — no backend needed.
-  const scenarios = [
-    {
-      key: "lock",
-      recValue: "Lock now — 100%",
-      recDetail: "Book the full volume at current rates",
-      cost: "Low", costClass: "risk-low",
-      risk: "Low", riskClass: "risk-low",
-      conf: "★★★★★",
-      why: [
-        ["↑", "Freight rates on this route have risen 6% over 2 weeks"],
-        ["↓", "Vessel availability is tightening for the delivery window"],
-        ["→", "Waiting is unlikely to improve pricing before the window closes"]
-      ]
-    },
-    {
-      key: "partial",
-      recValue: "Partial lock — 40%",
-      recDetail: "Book 40% now, keep 60% flexible",
-      cost: "Medium", costClass: "risk-med",
-      risk: "Low", riskClass: "risk-low",
-      conf: "★★★★☆",
-      why: [
-        ["↑", "Fuel prices trending upward"],
-        ["↓", "Vessel availability tightening on this lane"],
-        ["↑", "Port congestion rising at destination"]
-      ]
-    },
-    {
-      key: "wait",
-      recValue: "Wait — reassess in 5 days",
-      recDetail: "No booking pressure yet on this route",
-      cost: "Low", costClass: "risk-low",
-      risk: "Medium", riskClass: "risk-med",
-      conf: "★★★☆☆",
-      why: [
-        ["↓", "Freight rates have softened 3% this week"],
-        ["→", "Vessel supply is comfortable for the delivery window"],
-        ["↓", "Port congestion at destination is easing"]
-      ]
-    },
-    {
-      key: "caution",
-      recValue: "Partial lock — 25%",
-      recDetail: "Small position now, reassess weekly",
-      cost: "High", costClass: "risk-high",
-      risk: "Medium", riskClass: "risk-med",
-      conf: "★★★☆☆",
-      why: [
-        ["↑", "Route passes through a seasonal congestion zone"],
-        ["↑", "Bunker fuel prices up sharply this month"],
-        ["→", "Delivery window leaves limited room to wait out volatility"]
-      ]
-    }
-  ];
 
-  function pickScenario(origin, dest, cargo, windowVal) {
-    // Simple deterministic hash so the same inputs always give the same result,
-    // but different inputs feel like they're being actually evaluated.
-    const str = origin + dest + cargo + windowVal;
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
-    }
-    // delivery window nudges urgency
-    if (windowVal.includes("2 weeks")) {
-      return scenarios[hash % 2 === 0 ? 0 : 1]; // lock or partial
-    } else if (windowVal.includes("8 weeks")) {
-      return scenarios[hash % 2 === 0 ? 2 : 3]; // wait or caution
-    }
-    return scenarios[hash % scenarios.length];
+let chartInstance = null;
+
+
+/* ---------- PORT DATA ---------- */
+
+const ORIGIN_PORTS = [
+
+  {
+    code:"AU",
+    name:"Newcastle"
+  },
+
+  {
+    code:"AU",
+    name:"Gladstone"
+  },
+
+  {
+    code:"AU",
+    name:"Hay Point"
+  },
+
+  {
+    code:"ID",
+    name:"Tanjung Bara"
+  },
+
+  {
+    code:"ID",
+    name:"Balikpapan"
+  },
+
+  {
+    code:"US",
+    name:"Norfolk"
+  },
+
+  {
+    code:"CA",
+    name:"Vancouver"
+  },
+
+  {
+    code:"ZA",
+    name:"Richards Bay"
   }
 
-  const btn = document.getElementById('runBtn');
-  const result = document.getElementById('result');
-  const hint = document.getElementById('runHint');
+];
 
-  btn.addEventListener('click', () => {
-    const origin = document.getElementById('origin').value;
-    const dest = document.getElementById('dest').value;
-    const cargo = document.getElementById('cargo').value;
-    const windowVal = document.getElementById('window').value;
 
-    btn.textContent = "Analyzing…";
-    hint.textContent = "Reading freight indices, vessel data, and port conditions";
-    result.classList.remove('show');
+const DEST_PORTS = [
 
-    setTimeout(() => {
-      const sc = pickScenario(origin, dest, cargo, windowVal);
-      document.getElementById('recValue').textContent = sc.recValue;
-      document.getElementById('recDetail').textContent = sc.recDetail;
+  {
+    code:"IN",
+    name:"Dhamra"
+  },
 
-      const costEl = document.getElementById('statCost');
-      costEl.textContent = sc.cost;
-      costEl.className = "stat-value " + sc.costClass;
+  {
+    code:"IN",
+    name:"Paradip"
+  },
 
-      const riskEl = document.getElementById('statRisk');
-      riskEl.textContent = sc.risk;
-      riskEl.className = "stat-value " + sc.riskClass;
+  {
+    code:"IN",
+    name:"Visakhapatnam"
+  },
 
-      document.getElementById('statConf').textContent = sc.conf;
+  {
+    code:"IN",
+    name:"Haldia"
+  },
 
-      const whyList = document.getElementById('whyList');
-      whyList.innerHTML = "";
-      sc.why.forEach(([sig, text]) => {
-        const li = document.createElement('li');
-        li.innerHTML = `<span class="sig">${sig}</span><span>${text}</span>`;
-        whyList.appendChild(li);
-      });
+  {
+    code:"IN",
+    name:"Krishnapatnam"
+  },
 
-      result.classList.add('show');
-      btn.textContent = "Get recommendation";
-      hint.textContent = "Runs the decision engine on current market signals";
-    }, 700);
-  });
+  {
+    code:"IN",
+    name:"Mundra"
+  }
 
-  // auto-run once on load so the panel isn't empty
-  window.addEventListener('load', () => btn.click());
+];
+
+
+/* ---------- POPULATE PORTS ---------- */
+
+function populatePorts(){
+
+  const originList =
+    document.getElementById('originList');
+
+  const destList =
+    document.getElementById('destList');
+
+
+  originList.innerHTML =
+    ORIGIN_PORTS.map(
+      p => `<option value="${p.code} · ${p.name}"></option>`
+    ).join('');
+
+
+  destList.innerHTML =
+    DEST_PORTS.map(
+      p => `<option value="${p.code} · ${p.name}"></option>`
+    ).join('');
+
+
+  document.getElementById('originSelect').value =
+    "AU · Newcastle";
+
+
+  document.getElementById('destSelect').value =
+    "IN · Dhamra";
+
+}
+
+
+/* ---------- ROUTE UPDATE ---------- */
+
+function updateRoute(){
+
+  const tonnage =
+    document.getElementById('tonnageInput').value || '—';
+
+
+  document.querySelector(
+    '.route .cargo b'
+  ).innerText = tonnage;
+
+
+  document.getElementById(
+    'output'
+  ).classList.remove('show');
+
+}
+
+
+/* ---------- DEFAULT DATE ---------- */
+
+function setDefaultDeliveryDate(){
+
+  const d = new Date();
+
+  d.setDate(
+    d.getDate() + 30
+  );
+
+  document.getElementById(
+    'deliveryDate'
+  ).value =
+    d.toISOString().split('T')[0];
+
+}
+
+
+populatePorts();
+
+updateRoute();
+
+setDefaultDeliveryDate();
+
+
+/* ---------- SCENARIOS ---------- */
+
+const scenarios = {
+
+
+  WAIT:{
+
+    status:"Wait — delay booking",
+
+    barColor:"var(--steel)",
+
+    cost:"$12.80 – $13.50 / ton",
+
+    risk:"LOW",
+
+    confidence:"91%",
+
+    drivers:[
+
+      {
+        color:"var(--teal)",
+        label:"Rate trend",
+        text:"Spot rates fell 5% over the past 7 days."
+      },
+
+      {
+        color:"var(--teal)",
+        label:"Vessel availability",
+        text:"Bulk carrier supply is increasing across Asia routes."
+      },
+
+      {
+        color:"var(--steel)",
+        label:"Port congestion",
+        text:"Waiting times at Dhamra are easing toward normal."
+      },
+
+      {
+        color:"var(--steel)",
+        label:"Feasibility",
+        text:"__VESSEL__ vessel fits destination draft limits."
+      }
+
+    ],
+
+    chartData:[
+      15.2,
+      14.8,
+      14.1,
+      13.5,
+      13.0,
+      12.8
+    ],
+
+    heading:
+      "Hold off booking until the price target is met",
+
+    desc:
+      "Set a rate alert, or confirm manually once the market bottoms out.",
+
+    buttons:`
+
+      <button
+        class="btn btn-primary"
+        onclick="confirmBooking('Price drop confirmed — booked at $12.90/ton')">
+
+        Price dropped — confirm &amp; book
+
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        onclick="recordAudit('Price alert set at $12.80/ton','Monitoring')">
+
+        Set price alert
+
+      </button>
+
+    `
+
+  },
+
+
+  LOCK:{
+
+    status:"Lock now — book 100%",
+
+    barColor:"var(--amber)",
+
+    cost:"$16.40 – $17.10 / ton",
+
+    risk:"HIGH",
+
+    confidence:"94%",
+
+    drivers:[
+
+      {
+        color:"var(--red)",
+        label:"Bunker fuel",
+        text:"Prices are surging sharply on geopolitical risk."
+      },
+
+      {
+        color:"var(--red)",
+        label:"Port congestion",
+        text:"Heavy congestion is forecast at eastern Indian ports."
+      },
+
+      {
+        color:"var(--amber)",
+        label:"Tight capacity",
+        text:"Few suitable vessels remain available next week."
+      },
+
+      {
+        color:"var(--steel)",
+        label:"Feasibility",
+        text:"Selected vessel fits berth beam and depth limits."
+      }
+
+    ],
+
+    chartData:[
+      13.5,
+      14.2,
+      15.0,
+      16.4,
+      17.2,
+      18.0
+    ],
+
+    heading:
+      "Secure full capacity now to avoid further loss",
+
+    desc:
+      "Freight rates are projected to keep climbing over the next 14 days.",
+
+    buttons:`
+
+      <button
+        class="btn btn-primary"
+        onclick="confirmBooking('100% capacity locked instantly')">
+
+        Approve — lock 100% now
+
+      </button>
+
+    `
+
+  },
+
+
+  PARTIAL:{
+
+    status:"Partial lock — book 40%",
+
+    barColor:"var(--amber)",
+
+    cost:"$14.20 – $15.50 / ton",
+
+    risk:"MEDIUM",
+
+    confidence:"87%",
+
+    drivers:[
+
+      {
+        color:"var(--amber)",
+        label:"Market uncertainty",
+        text:"Fuel prices are volatile, but vessel supply is stable."
+      },
+
+      {
+        color:"var(--amber)",
+        label:"Risk mitigation",
+        text:"Locking 40% covers base demand and leaves 60% flexible."
+      },
+
+      {
+        color:"var(--steel)",
+        label:"Port limits",
+        text:"Draft requirements are confirmed for Dhamra berth 2."
+      },
+
+      {
+        color:"var(--steel)",
+        label:"Annual alignment",
+        text:"Fits within the quarterly spot allocation limit."
+      }
+
+    ],
+
+    chartData:[
+      13.2,
+      13.5,
+      13.8,
+      14.2,
+      14.9,
+      15.4
+    ],
+
+    heading:
+      "Split exposure between locked and flexible capacity",
+
+    desc:
+      "Lock part of the order now and hold the rest until the market steadies.",
+
+    buttons:`
+
+      <button
+        class="btn btn-primary"
+        onclick="confirmBooking('Partial lock (40%) approved')">
+
+        Approve 40% lock
+
+      </button>
+
+      <button
+        class="btn btn-secondary"
+        onclick="recordAudit('Overridden — manual 100% lock','Overridden')">
+
+        Manual override
+
+      </button>
+
+    `
+
+  }
+
+};
+
+
+/* ---------- EAST COAST RISK ---------- */
+
+function getPortRisk(destination,scenario){
+
+  const eastCoast =
+    destination.includes("Dhamra") ||
+    destination.includes("Paradip") ||
+    destination.includes("Visakhapatnam") ||
+    destination.includes("Haldia");
+
+
+  if(!eastCoast){
+
+    return{
+
+      cyclone:"LOW",
+
+      congestion:
+        scenario === "LOCK"
+        ? "HIGH"
+        : "MODERATE",
+
+      seasonal:"LOW",
+
+      note:
+        "Destination is outside the core East Coast risk set."
+
+    };
+
+  }
+
+
+  if(scenario === "LOCK"){
+
+    return{
+
+      cyclone:"MODERATE",
+
+      congestion:"HIGH",
+
+      seasonal:"WATCH",
+
+      note:
+        "East Coast seasonal disruption is included in the decision."
+
+    };
+
+  }
+
+
+  if(scenario === "PARTIAL"){
+
+    return{
+
+      cyclone:"MODERATE",
+
+      congestion:"MODERATE",
+
+      seasonal:"WATCH",
+
+      note:
+        "Partial locking balances freight exposure against port disruption risk."
+
+    };
+
+  }
+
+
+  return{
+
+    cyclone:"MODERATE",
+
+    congestion:"LOW",
+
+    seasonal:"WATCH",
+
+    note:
+      "Seasonal East Coast exposure is monitored while waiting for a better rate."
+
+  };
+
+}
+
+
+/* ---------- DISPLAY RISK ---------- */
+
+function renderPortRisk(scenario){
+
+  const destination =
+    document.getElementById(
+      'destSelect'
+    ).value;
+
+
+  const risk =
+    getPortRisk(
+      destination,
+      scenario
+    );
+
+
+  const cls =
+    value => {
+
+      if(value === "HIGH")
+        return "risk-high";
+
+      if(
+        value === "MODERATE" ||
+        value === "WATCH"
+      )
+        return "risk-medium";
+
+      return "risk-low";
+
+    };
+
+
+  document.getElementById(
+    'riskPanel'
+  ).innerHTML = `
+
+    <div class="risk-row">
+
+      <span class="risk-name">
+        🌪 Cyclone exposure
+      </span>
+
+      <span class="risk-value ${cls(risk.cyclone)}">
+        ${risk.cyclone}
+      </span>
+
+    </div>
+
+
+    <div class="risk-row">
+
+      <span class="risk-name">
+        ⚓ Port congestion
+      </span>
+
+      <span class="risk-value ${cls(risk.congestion)}">
+        ${risk.congestion}
+      </span>
+
+    </div>
+
+
+    <div class="risk-row">
+
+      <span class="risk-name">
+        📅 Seasonal disruption
+      </span>
+
+      <span class="risk-value ${cls(risk.seasonal)}">
+        ${risk.seasonal}
+      </span>
+
+    </div>
+
+
+    <div class="risk-note">
+      ${risk.note}
+    </div>
+
+  `;
+
+}
+
+
+/* ---------- RUN ANALYSIS ---------- */
+
+function runAnalysis(){
+
+  const type =
+    document.getElementById(
+      'scenarioSelect'
+    ).value;
+
+
+  const data =
+    scenarios[type];
+
+
+  document.getElementById(
+    'output'
+  ).classList.add('show');
+
+
+  document.getElementById(
+    'statusText'
+  ).innerText =
+    data.status;
+
+
+  document.querySelector(
+    '.banner'
+  ).style.borderLeftColor =
+    data.barColor;
+
+
+  document.getElementById(
+    'costVal'
+  ).innerText =
+    data.cost;
+
+
+  const riskVal =
+    document.getElementById(
+      'riskVal'
+    );
+
+
+  riskVal.innerText =
+    data.risk;
+
+
+  riskVal.className =
+    'metric-value ' +
+
+    (
+      data.risk === 'HIGH'
+      ? 'risk-high'
+      : data.risk === 'MEDIUM'
+      ? 'risk-medium'
+      : 'risk-low'
+    );
+
+
+  document.getElementById(
+    'confidenceVal'
+  ).innerText =
+    data.confidence;
+
+
+  const vessel =
+    document.getElementById(
+      'vesselSelect'
+    ).value;
+
+
+  document.getElementById(
+    'driversList'
+  ).innerHTML =
+
+    data.drivers.map(
+      d => `
+
+        <div class="driver">
+
+          <span
+            class="dot"
+            style="background:${d.color}">
+          </span>
+
+          <span>
+
+            <b>
+              ${d.label}.
+            </b>
+
+            <span>
+              ${d.text.replace(
+                '__VESSEL__',
+                vessel
+              )}
+            </span>
+
+          </span>
+
+        </div>
+
+      `
+    ).join('');
+
+
+  document.getElementById(
+    'actionHeading'
+  ).innerText =
+    data.heading;
+
+
+  document.getElementById(
+    'actionDesc'
+  ).innerText =
+    data.desc;
+
+
+  document.getElementById(
+    'actionButtons'
+  ).innerHTML =
+    data.buttons;
+
+
+  renderPortRisk(type);
+
+  renderChart(
+    data.chartData,
+    data.barColor
+  );
+
+}
+
+
+/* ---------- BOOKING ---------- */
+
+function confirmBooking(actionName){
+
+  recordAudit(
+    actionName,
+    'Booked'
+  );
+
+
+  const scenario =
+    document.getElementById(
+      'scenarioSelect'
+    ).value;
+
+
+  let actual;
+  let predicted;
+
+
+  if(scenario === 'LOCK'){
+
+    actual = '$16.70/t';
+    predicted = '$16.40/t';
+
+  }
+
+  else if(scenario === 'PARTIAL'){
+
+    actual = '$14.35/t';
+    predicted = '$14.20/t';
+
+  }
+
+  else{
+
+    actual = '$12.84/t';
+    predicted = '$12.90/t';
+
+  }
+
+
+  const p =
+    parseFloat(
+      predicted
+        .replace('$','')
+        .replace('/t','')
+    );
+
+
+  const a =
+    parseFloat(
+      actual
+        .replace('$','')
+        .replace('/t','')
+    );
+
+
+  const variance =
+    Math.abs(
+      ((a-p)/p)*100
+    ).toFixed(1);
+
+
+  document.getElementById(
+    'predictedRate'
+  ).innerText =
+    predicted;
+
+
+  document.getElementById(
+    'actualRate'
+  ).innerText =
+    actual;
+
+
+  document.getElementById(
+    'varianceRate'
+  ).innerText =
+    variance + '%';
+
+
+  document.getElementById(
+    'learningBadge'
+  ).innerText =
+    'Feedback recorded';
+
+
+  setTimeout(
+
+    () => {
+
+      recordAudit(
+        'Actual rate vs predicted: ' +
+        variance +
+        '% variance',
+        'Monitoring'
+      );
+
+    },
+
+    900
+
+  );
+
+
+  showToast(actionName);
+
+}
+
+
+/* ---------- AUDIT ---------- */
+
+function recordAudit(
+  actionText,
+  statusTag
+){
+
+  const table =
+    document.getElementById(
+      'auditTable'
+    );
+
+
+  const time =
+    new Date().toLocaleTimeString(
+      [],
+      {
+        hour:'2-digit',
+        minute:'2-digit'
+      }
+    );
+
+
+  const randomID =
+    'SH-2026-0' +
+    Math.floor(
+      10 + Math.random()*90
+    );
+
+
+  const strategy =
+    document.getElementById(
+      'statusText'
+    )
+    .innerText
+    .split(' ')[0]
+    .toUpperCase();
+
+
+  const pillClass =
+    statusTag === 'Booked'
+    ? 'status-confirmed'
+
+    : statusTag === 'Overridden'
+    ? 'status-overridden'
+
+    : 'status-monitoring';
+
+
+  const row =
+    document.createElement('tr');
+
+
+  row.className =
+    'new-row';
+
+
+  row.innerHTML = `
+
+    <td class="mono">
+      ${time}
+    </td>
+
+    <td class="mono">
+      ${randomID}
+    </td>
+
+    <td style="color:var(--text);font-weight:600;">
+      ${strategy}
+    </td>
+
+    <td style="color:var(--text);">
+      ${actionText}
+    </td>
+
+    <td>
+
+      <span
+        class="status-pill ${pillClass}">
+
+        ${statusTag}
+
+      </span>
+
+    </td>
+
+  `;
+
+
+  table.prepend(row);
+
+}
+
+
+/* ---------- TOAST ---------- */
+
+function showToast(msg){
+
+  const toast =
+    document.getElementById(
+      'toast'
+    );
+
+
+  document.getElementById(
+    'toastMsg'
+  ).innerText =
+
+    msg +
+    ' — recorded in the decision trail.';
+
+
+  toast.classList.add('show');
+
+
+  clearTimeout(
+    window._toastTimer
+  );
+
+
+  window._toastTimer =
+
+    setTimeout(
+      () =>
+        toast.classList.remove('show'),
+      3200
+    );
+
+}
+
+
+/* ---------- CHART ---------- */
+
+function renderChart(
+  chartData,
+  accent
+){
+
+  const ctx =
+    document.getElementById(
+      'rateChart'
+    ).getContext('2d');
+
+
+  if(chartInstance)
+    chartInstance.destroy();
+
+
+  const style =
+    getComputedStyle(
+      document.documentElement
+    );
+
+
+  const resolvedAccent =
+    accent.startsWith('var(')
+
+    ? style.getPropertyValue(
+        accent.slice(4,-1)
+      ).trim()
+
+    : accent;
+
+
+  chartInstance =
+
+    new Chart(
+      ctx,
+      {
+
+        type:'line',
+
+        data:{
+
+          labels:[
+            'W1',
+            'W2',
+            'W3',
+            'W4 (now)',
+            'W5 (fcst)',
+            'W6 (fcst)'
+          ],
+
+          datasets:[{
+
+            label:'$ / ton',
+
+            data:chartData,
+
+            borderColor:
+              resolvedAccent,
+
+            backgroundColor:
+              resolvedAccent + '22',
+
+            pointBackgroundColor:
+              resolvedAccent,
+
+            fill:true,
+
+            tension:0.3,
+
+            borderWidth:2
+
+          }]
+
+        },
+
+
+        options:{
+
+          plugins:{
+            legend:{
+              display:false
+            }
+          },
+
+          scales:{
+
+            x:{
+
+              ticks:{
+                color:'#8FA3AF',
+
+                font:{
+                  family:'IBM Plex Mono',
+                  size:10.5
+                }
+
+              },
+
+              grid:{
+                color:'#1D2A33'
+              }
+
+            },
+
+
+            y:{
+
+              ticks:{
+                color:'#8FA3AF',
+
+                font:{
+                  family:'IBM Plex Mono',
+                  size:10.5
+                }
+
+              },
+
+              grid:{
+                color:'#1D2A33'
+              }
+
+            }
+
+          }
+
+        }
+
+      }
+    );
+
+}
+
 </script>
 
 </body>
-</html>
+</html>          

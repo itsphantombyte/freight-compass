@@ -93,6 +93,35 @@ body{
   font-weight:600;
 }
 
+.lang-toggle{
+  display:inline-flex;
+  border:1px solid var(--line);
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+
+.lang-toggle button{
+  border:none;
+  background:var(--panel-raised);
+  color:var(--text-dim);
+  font-size:11px;
+  font-weight:600;
+  padding:5px 12px;
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.lang-toggle button.active{
+  background:var(--steel);
+  color:#0E161D;
+}
+
+.lang-toggle button:focus-visible{
+  outline:2px solid var(--amber);
+  outline-offset:-2px;
+}
+
 /* ---------- Route ---------- */
 
 .route{
@@ -300,6 +329,11 @@ select:focus-visible{
 
 .run-btn:hover{
   background:#f0ae4c;
+}
+
+.run-btn:focus-visible{
+  outline:2px solid var(--text);
+  outline-offset:2px;
 }
 
 /* ---------- Output ---------- */
@@ -518,6 +552,7 @@ select:focus-visible{
   height:100%;
   background:var(--steel);
   border-radius:4px;
+  transition:width .3s ease;
 }
 
 /* ---------- Action ---------- */
@@ -564,6 +599,11 @@ select:focus-visible{
 
 .btn:hover{
   filter:brightness(1.1);
+}
+
+.btn:focus-visible{
+  outline:2px solid var(--text);
+  outline-offset:2px;
 }
 
 .btn-primary{
@@ -685,6 +725,69 @@ tbody tr.new-row{
   white-space:nowrap;
 }
 
+/* ---------- Compliance note ---------- */
+
+.compliance{
+  margin-top:18px;
+}
+
+.compliance-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:14px;
+  flex-wrap:wrap;
+}
+
+.compliance-head p{
+  font-size:12px;
+  color:var(--text-dim);
+  margin:4px 0 0;
+  max-width:520px;
+}
+
+.compliance-box{
+  margin-top:14px;
+  background:var(--panel-raised);
+  border:1px solid var(--line);
+  border-left:3px solid var(--teal);
+  border-radius:8px;
+  padding:14px 16px;
+  font-size:12.5px;
+  line-height:1.6;
+  color:var(--text-dim);
+  display:none;
+  white-space:pre-line;
+}
+
+.compliance-box.show{
+  display:block;
+}
+
+.compliance-box .cn-title{
+  font-size:10.5px;
+  letter-spacing:0.04em;
+  color:var(--text-faint);
+  margin-bottom:8px;
+}
+
+.compliance-copy{
+  margin-top:10px;
+  background:transparent;
+  border:1px solid var(--line);
+  color:var(--text-dim);
+  border-radius:6px;
+  padding:6px 12px;
+  font-size:11px;
+  cursor:pointer;
+  font-family:inherit;
+}
+
+.compliance-copy:hover{
+  color:var(--text);
+  border-color:var(--steel);
+}
+
 /* ---------- Toast ---------- */
 
 #toast{
@@ -763,17 +866,26 @@ tbody tr.new-row{
 
   <div>
 
-    <h1>FreightCompass</h1>
+    <h1 data-i18n="title">FreightCompass</h1>
 
-    <div class="meta">
+    <div class="meta" data-i18n="subtitle">
       SIH 2026 · Problem ID SIH26006 · Team Stacked Brainers
     </div>
 
   </div>
 
-  <div class="tag">
-    SAIL Procurement Portal<br>
-    <b>Freight Strategy Advisory</b>
+  <div style="text-align:right;">
+
+    <div class="tag">
+      <span data-i18n="portal">SAIL Procurement Portal</span><br>
+      <b data-i18n="advisory">Freight Strategy Advisory</b>
+    </div>
+
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" id="langEnBtn" class="active" onclick="setLang('en')">EN</button>
+      <button type="button" id="langHiBtn" onclick="setLang('hi')">हिं</button>
+    </div>
+
   </div>
 
 </div>
@@ -785,7 +897,7 @@ tbody tr.new-row{
 
   <div class="port">
 
-    <div class="code mono">
+    <div class="code mono" data-i18n="origin">
       ORIGIN — type or pick
     </div>
 
@@ -809,9 +921,9 @@ tbody tr.new-row{
 
   <div class="cargo">
 
-    Coking Coal
+    <span data-i18n="cargoLabel">Coking Coal</span>
 
-    <b class="mono">
+    <b class="mono" id="cargoTonnageDisplay">
       75,000 MT
     </b>
 
@@ -825,7 +937,7 @@ tbody tr.new-row{
 
   <div class="port dest">
 
-    <div class="code mono">
+    <div class="code mono" data-i18n="destination">
       DESTINATION — type or pick
     </div>
 
@@ -850,7 +962,7 @@ tbody tr.new-row{
 
   <div>
 
-    <label for="vesselSelect">
+    <label for="vesselSelect" data-i18n="vesselLabel">
       Vessel / deck class
     </label>
 
@@ -883,7 +995,7 @@ tbody tr.new-row{
 
   <div>
 
-    <label for="tonnageInput">
+    <label for="tonnageInput" data-i18n="tonnageLabel">
       Cargo tonnage
     </label>
 
@@ -898,17 +1010,16 @@ tbody tr.new-row{
   </div>
 
 
-  <!-- NEW DELIVERY DATE -->
-
   <div class="delivery-date">
 
-    <label for="deliveryDate">
+    <label for="deliveryDate" data-i18n="deliveryLabel">
       Delivery date
     </label>
 
     <input
       type="date"
       id="deliveryDate"
+      onchange="updateRoute()"
     >
 
   </div>
@@ -916,7 +1027,7 @@ tbody tr.new-row{
 
   <div>
 
-    <label for="scenarioSelect">
+    <label for="scenarioSelect" data-i18n="scenarioLabel">
       Market scenario (demo input)
     </label>
 
@@ -941,7 +1052,9 @@ tbody tr.new-row{
 
   <button
     class="run-btn"
+    id="runBtn"
     onclick="runAnalysis()"
+    data-i18n="runBtn"
   >
     Run AI Analysis
   </button>
@@ -960,7 +1073,7 @@ tbody tr.new-row{
 
     <div>
 
-      <div class="strategy mono">
+      <div class="strategy mono" data-i18n="aiRec">
         AI RECOMMENDATION
       </div>
 
@@ -978,7 +1091,7 @@ tbody tr.new-row{
 
       <div class="metric">
 
-        <div class="metric-label">
+        <div class="metric-label" data-i18n="costLabel">
           COST
         </div>
 
@@ -993,7 +1106,7 @@ tbody tr.new-row{
 
       <div class="metric">
 
-        <div class="metric-label">
+        <div class="metric-label" data-i18n="riskLabel">
           DOWNSIDE RISK
         </div>
 
@@ -1008,7 +1121,7 @@ tbody tr.new-row{
 
       <div class="metric">
 
-        <div class="metric-label">
+        <div class="metric-label" data-i18n="confLabel">
           CONFIDENCE
         </div>
 
@@ -1032,7 +1145,7 @@ tbody tr.new-row{
 
     <div class="panel">
 
-      <h3>
+      <h3 data-i18n="whyHeading">
         Why the model recommends this
       </h3>
 
@@ -1043,7 +1156,7 @@ tbody tr.new-row{
 
     <div class="panel">
 
-      <h3>
+      <h3 data-i18n="forecastHeading">
         Freight cost forecast ($ / ton)
       </h3>
 
@@ -1066,7 +1179,7 @@ tbody tr.new-row{
 
     <div class="panel">
 
-      <h3>
+      <h3 data-i18n="riskHeading">
         East Coast risk monitor
       </h3>
 
@@ -1079,22 +1192,22 @@ tbody tr.new-row{
 
     <div class="panel">
 
-      <h3>
+      <h3 data-i18n="allocHeading">
         Annual freight allocation
       </h3>
 
-      <div class="allocation">
+      <div class="allocation" id="allocationGrid">
 
 
         <div class="alloc-item">
 
           <div class="alloc-head">
 
-            <span>
+            <span data-i18n="allocFixed">
               Fixed
             </span>
 
-            <b>
+            <b id="allocFixedPct">
               60%
             </b>
 
@@ -1104,6 +1217,7 @@ tbody tr.new-row{
 
             <div
               class="alloc-fill"
+              id="allocFixedBar"
               style="width:60%">
             </div>
 
@@ -1116,11 +1230,11 @@ tbody tr.new-row{
 
           <div class="alloc-head">
 
-            <span>
+            <span data-i18n="allocQuarterly">
               Quarterly
             </span>
 
-            <b>
+            <b id="allocQuarterlyPct">
               25%
             </b>
 
@@ -1130,6 +1244,7 @@ tbody tr.new-row{
 
             <div
               class="alloc-fill"
+              id="allocQuarterlyBar"
               style="width:25%">
             </div>
 
@@ -1142,11 +1257,11 @@ tbody tr.new-row{
 
           <div class="alloc-head">
 
-            <span>
+            <span data-i18n="allocSpot">
               Spot
             </span>
 
-            <b>
+            <b id="allocSpotPct">
               15%
             </b>
 
@@ -1156,6 +1271,7 @@ tbody tr.new-row{
 
             <div
               class="alloc-fill"
+              id="allocSpotBar"
               style="width:15%">
             </div>
 
@@ -1166,7 +1282,7 @@ tbody tr.new-row{
       </div>
 
 
-      <div class="risk-note">
+      <div class="risk-note" id="allocationNote">
 
         Recommended mix keeps a controlled portion flexible
         for market opportunities.
@@ -1202,11 +1318,11 @@ tbody tr.new-row{
 
   <div class="panel ledger">
 
-    <h3>
+    <h3 data-i18n="auditHeading">
       Auditable decision trail
     </h3>
 
-    <div class="sub">
+    <div class="sub" data-i18n="auditSub">
 
       Every recommendation and manager action is logged
       for procurement compliance.
@@ -1220,23 +1336,23 @@ tbody tr.new-row{
 
         <tr>
 
-          <th>
+          <th data-i18n="colTime">
             Time
           </th>
 
-          <th>
+          <th data-i18n="colShipment">
             Shipment ID
           </th>
 
-          <th>
+          <th data-i18n="colStrategy">
             AI strategy
           </th>
 
-          <th>
+          <th data-i18n="colAction">
             Action taken
           </th>
 
-          <th>
+          <th data-i18n="colStatus">
             Status
           </th>
 
@@ -1284,24 +1400,24 @@ tbody tr.new-row{
 
       <div>
 
-        <div class="learning-title">
+        <div class="learning-title" data-i18n="learnHeading">
           LEARN FROM RESULTS
         </div>
 
         <div class="learning-main">
 
-          Predicted
+          <span data-i18n="predicted">Predicted</span>
           <b id="predictedRate">
             $12.90/t
           </b>
 
-          · Actual
+          · <span data-i18n="actual">Actual</span>
 
           <b id="actualRate">
             —
           </b>
 
-          · Variance
+          · <span data-i18n="variance">Variance</span>
 
           <b id="varianceRate">
             —
@@ -1314,10 +1430,45 @@ tbody tr.new-row{
 
       <div
         class="learning-badge"
-        id="learningBadge">
+        id="learningBadge"
+        data-i18n="awaitingBooking">
 
         Awaiting booking
 
+      </div>
+
+    </div>
+
+
+    <!-- COMPLIANCE NOTE -->
+
+    <div class="compliance">
+
+      <div class="compliance-head">
+
+        <div>
+          <h3 style="margin-bottom:0;" data-i18n="complianceHeading">Vigilance justification note</h3>
+          <p data-i18n="complianceSub">
+            Auto-drafts the CVC/GFR-compliant paragraph explaining why this booking is
+            defensible even when it is not the lowest quoted price.
+          </p>
+        </div>
+
+        <button
+          class="btn btn-secondary"
+          id="complianceBtn"
+          onclick="generateComplianceNote()"
+          disabled
+          data-i18n="complianceBtn">
+          Generate justification note
+        </button>
+
+      </div>
+
+      <div class="compliance-box" id="complianceBox">
+        <div class="cn-title" data-i18n="complianceBoxTitle">DRAFT — FOR PROCUREMENT FILE</div>
+        <div id="complianceText"></div>
+        <button class="compliance-copy" onclick="copyComplianceNote()" data-i18n="complianceCopy">Copy note</button>
       </div>
 
     </div>
@@ -1343,119 +1494,194 @@ tbody tr.new-row{
 <script>
 
 let chartInstance = null;
+let lastRunData = null;
+let lastRunType = null;
+
+
+/* ---------- I18N ---------- */
+
+const I18N = {
+
+  en: {
+    title: "FreightCompass",
+    subtitle: "SIH 2026 · Problem ID SIH26006 · Team Stacked Brainers",
+    portal: "SAIL Procurement Portal",
+    advisory: "Freight Strategy Advisory",
+    origin: "ORIGIN — type or pick",
+    destination: "DESTINATION — type or pick",
+    cargoLabel: "Coking Coal",
+    vesselLabel: "Vessel / deck class",
+    tonnageLabel: "Cargo tonnage",
+    deliveryLabel: "Delivery date",
+    scenarioLabel: "Market scenario (demo input)",
+    runBtn: "Run AI Analysis",
+    aiRec: "AI RECOMMENDATION",
+    costLabel: "COST",
+    riskLabel: "DOWNSIDE RISK",
+    confLabel: "CONFIDENCE",
+    whyHeading: "Why the model recommends this",
+    forecastHeading: "Freight cost forecast ($ / ton)",
+    riskHeading: "East Coast risk monitor",
+    allocHeading: "Annual freight allocation",
+    allocFixed: "Fixed",
+    allocQuarterly: "Quarterly",
+    allocSpot: "Spot",
+    auditHeading: "Auditable decision trail",
+    auditSub: "Every recommendation and manager action is logged for procurement compliance.",
+    colTime: "Time",
+    colShipment: "Shipment ID",
+    colStrategy: "AI strategy",
+    colAction: "Action taken",
+    colStatus: "Status",
+    learnHeading: "LEARN FROM RESULTS",
+    predicted: "Predicted",
+    actual: "Actual",
+    variance: "Variance",
+    awaitingBooking: "Awaiting booking",
+    complianceHeading: "Vigilance justification note",
+    complianceSub: "Auto-drafts the CVC/GFR-compliant paragraph explaining why this booking is defensible even when it is not the lowest quoted price.",
+    complianceBtn: "Generate justification note",
+    complianceBoxTitle: "DRAFT — FOR PROCUREMENT FILE",
+    complianceCopy: "Copy note",
+  },
+
+  hi: {
+    title: "फ्रेट कंपास",
+    subtitle: "एसआईएच 2026 · समस्या आईडी SIH26006 · टीम स्टैक्ड ब्रेनर्स",
+    portal: "सेल खरीद पोर्टल",
+    advisory: "माल ढुलाई रणनीति सलाह",
+    origin: "प्रस्थान बंदरगाह — टाइप करें या चुनें",
+    destination: "गंतव्य बंदरगाह — टाइप करें या चुनें",
+    cargoLabel: "कोकिंग कोयला",
+    vesselLabel: "पोत / डेक श्रेणी",
+    tonnageLabel: "माल टनभार",
+    deliveryLabel: "डिलीवरी तिथि",
+    scenarioLabel: "बाज़ार परिदृश्य (डेमो इनपुट)",
+    runBtn: "एआई विश्लेषण चलाएँ",
+    aiRec: "एआई सिफारिश",
+    costLabel: "लागत",
+    riskLabel: "जोखिम",
+    confLabel: "विश्वास स्तर",
+    whyHeading: "मॉडल यह सिफारिश क्यों करता है",
+    forecastHeading: "माल ढुलाई लागत पूर्वानुमान ($ / टन)",
+    riskHeading: "पूर्वी तट जोखिम मॉनिटर",
+    allocHeading: "वार्षिक माल ढुलाई आवंटन",
+    allocFixed: "निश्चित",
+    allocQuarterly: "त्रैमासिक",
+    allocSpot: "स्पॉट",
+    auditHeading: "लेखा-परीक्षा योग्य निर्णय ट्रेल",
+    auditSub: "अनुपालन के लिए हर सिफारिश और प्रबंधक कार्रवाई दर्ज की जाती है।",
+    colTime: "समय",
+    colShipment: "शिपमेंट आईडी",
+    colStrategy: "एआई रणनीति",
+    colAction: "की गई कार्रवाई",
+    colStatus: "स्थिति",
+    learnHeading: "परिणामों से सीख",
+    predicted: "अनुमानित",
+    actual: "वास्तविक",
+    variance: "अंतर",
+    awaitingBooking: "बुकिंग की प्रतीक्षा",
+    complianceHeading: "सतर्कता औचित्य नोट",
+    complianceSub: "CVC/GFR-अनुरूप पैराग्राफ स्वतः तैयार करता है, जो बताता है कि सबसे कम कीमत न होने पर भी यह बुकिंग उचित क्यों है।",
+    complianceBtn: "औचित्य नोट तैयार करें",
+    complianceBoxTitle: "मसौदा — खरीद फ़ाइल हेतु",
+    complianceCopy: "नोट कॉपी करें",
+  }
+
+};
+
+let currentLang = 'en';
+
+function setLang(lang){
+
+  currentLang = lang;
+
+  document.getElementById('langEnBtn').classList.toggle('active', lang === 'en');
+  document.getElementById('langHiBtn').classList.toggle('active', lang === 'hi');
+
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key]) el.textContent = I18N[lang][key];
+  });
+
+  document.documentElement.lang = lang;
+}
 
 
 /* ---------- PORT DATA ---------- */
 
 const ORIGIN_PORTS = [
 
-  {
-    code:"AU",
-    name:"Newcastle"
-  },
-
-  {
-    code:"AU",
-    name:"Gladstone"
-  },
-
-  {
-    code:"AU",
-    name:"Hay Point"
-  },
-
-  {
-    code:"ID",
-    name:"Tanjung Bara"
-  },
-
-  {
-    code:"ID",
-    name:"Balikpapan"
-  },
-
-  {
-    code:"US",
-    name:"Norfolk"
-  },
-
-  {
-    code:"CA",
-    name:"Vancouver"
-  },
-
-  {
-    code:"ZA",
-    name:"Richards Bay"
-  }
+  { code:"AU", name:"Newcastle" },
+  { code:"AU", name:"Gladstone" },
+  { code:"AU", name:"Hay Point" },
+  { code:"ID", name:"Tanjung Bara" },
+  { code:"ID", name:"Balikpapan" },
+  { code:"US", name:"Norfolk" },
+  { code:"CA", name:"Vancouver" },
+  { code:"ZA", name:"Richards Bay" }
 
 ];
 
 
 const DEST_PORTS = [
 
-  {
-    code:"IN",
-    name:"Dhamra"
-  },
-
-  {
-    code:"IN",
-    name:"Paradip"
-  },
-
-  {
-    code:"IN",
-    name:"Visakhapatnam"
-  },
-
-  {
-    code:"IN",
-    name:"Haldia"
-  },
-
-  {
-    code:"IN",
-    name:"Krishnapatnam"
-  },
-
-  {
-    code:"IN",
-    name:"Mundra"
-  }
+  { code:"IN", name:"Dhamra" },
+  { code:"IN", name:"Paradip" },
+  { code:"IN", name:"Visakhapatnam" },
+  { code:"IN", name:"Haldia" },
+  { code:"IN", name:"Krishnapatnam" },
+  { code:"IN", name:"Mundra" }
 
 ];
+
+// East Coast ports for risk monitoring — kept in sync with DEST_PORTS above
+// so a port added there doesn't silently fall outside this check.
+const EAST_COAST_PORTS = ["Dhamra", "Paradip", "Visakhapatnam", "Haldia", "Krishnapatnam"];
+
+
+/* ---------- VESSEL COST ADJUSTMENT ---------- */
+// Smaller vessels lose economies of scale, so illustratively nudge $/ton up
+// as vessel class shrinks. Capesize is the baseline (no adjustment).
+const VESSEL_ADJUSTMENT = {
+  Capesize: 0,
+  Panamax: 0.35,
+  Supramax: 0.70,
+  Handymax: 0.95,
+  Handysize: 1.30
+};
+
+function adjustCostRange(costStr, vessel){
+
+  const bump = VESSEL_ADJUSTMENT[vessel] || 0;
+
+  const nums = costStr.match(/[\d.]+/g);
+  if(!nums || nums.length < 2) return costStr;
+
+  const low = (parseFloat(nums[0]) + bump).toFixed(2);
+  const high = (parseFloat(nums[1]) + bump).toFixed(2);
+
+  return `$${low} – $${high} / ton`;
+}
 
 
 /* ---------- POPULATE PORTS ---------- */
 
 function populatePorts(){
 
-  const originList =
-    document.getElementById('originList');
+  const originList = document.getElementById('originList');
+  const destList = document.getElementById('destList');
 
-  const destList =
-    document.getElementById('destList');
+  originList.innerHTML = ORIGIN_PORTS.map(
+    p => `<option value="${p.code} · ${p.name}"></option>`
+  ).join('');
 
+  destList.innerHTML = DEST_PORTS.map(
+    p => `<option value="${p.code} · ${p.name}"></option>`
+  ).join('');
 
-  originList.innerHTML =
-    ORIGIN_PORTS.map(
-      p => `<option value="${p.code} · ${p.name}"></option>`
-    ).join('');
-
-
-  destList.innerHTML =
-    DEST_PORTS.map(
-      p => `<option value="${p.code} · ${p.name}"></option>`
-    ).join('');
-
-
-  document.getElementById('originSelect').value =
-    "AU · Newcastle";
-
-
-  document.getElementById('destSelect').value =
-    "IN · Dhamra";
+  document.getElementById('originSelect').value = "AU · Newcastle";
+  document.getElementById('destSelect').value = "IN · Dhamra";
 
 }
 
@@ -1464,18 +1690,14 @@ function populatePorts(){
 
 function updateRoute(){
 
-  const tonnage =
-    document.getElementById('tonnageInput').value || '—';
+  const tonnage = document.getElementById('tonnageInput').value || '—';
 
+  document.getElementById('cargoTonnageDisplay').innerText = tonnage;
 
-  document.querySelector(
-    '.route .cargo b'
-  ).innerText = tonnage;
+  document.getElementById('output').classList.remove('show');
 
-
-  document.getElementById(
-    'output'
-  ).classList.remove('show');
+  document.getElementById('complianceBtn').disabled = true;
+  document.getElementById('complianceBox').classList.remove('show');
 
 }
 
@@ -1485,23 +1707,35 @@ function updateRoute(){
 function setDefaultDeliveryDate(){
 
   const d = new Date();
+  d.setDate(d.getDate() + 30);
 
-  d.setDate(
-    d.getDate() + 30
-  );
+  document.getElementById('deliveryDate').value = d.toISOString().split('T')[0];
 
-  document.getElementById(
-    'deliveryDate'
-  ).value =
-    d.toISOString().split('T')[0];
+}
+
+
+/* ---------- DELIVERY URGENCY ---------- */
+
+function getDeliveryUrgency(){
+
+  const val = document.getElementById('deliveryDate').value;
+  if(!val) return null;
+
+  const target = new Date(val);
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  const days = Math.round((target - today) / 86400000);
+
+  if(isNaN(days)) return null;
+
+  return days;
 
 }
 
 
 populatePorts();
-
 updateRoute();
-
 setDefaultDeliveryDate();
 
 
@@ -1513,76 +1747,28 @@ const scenarios = {
   WAIT:{
 
     status:"Wait — delay booking",
-
     barColor:"var(--steel)",
-
     cost:"$12.80 – $13.50 / ton",
-
     risk:"LOW",
-
     confidence:"91%",
 
     drivers:[
-
-      {
-        color:"var(--teal)",
-        label:"Rate trend",
-        text:"Spot rates fell 5% over the past 7 days."
-      },
-
-      {
-        color:"var(--teal)",
-        label:"Vessel availability",
-        text:"Bulk carrier supply is increasing across Asia routes."
-      },
-
-      {
-        color:"var(--steel)",
-        label:"Port congestion",
-        text:"Waiting times at Dhamra are easing toward normal."
-      },
-
-      {
-        color:"var(--steel)",
-        label:"Feasibility",
-        text:"__VESSEL__ vessel fits destination draft limits."
-      }
-
+      { color:"var(--teal)",  label:"Rate trend",          text:"Spot rates fell 5% over the past 7 days." },
+      { color:"var(--teal)",  label:"Vessel availability", text:"Bulk carrier supply is increasing across Asia routes." },
+      { color:"var(--steel)", label:"Port congestion",     text:"Waiting times at Dhamra are easing toward normal." },
+      { color:"var(--steel)", label:"Feasibility",         text:"__VESSEL__ vessel fits destination draft limits." }
     ],
 
-    chartData:[
-      15.2,
-      14.8,
-      14.1,
-      13.5,
-      13.0,
-      12.8
-    ],
+    chartData:[15.2, 14.8, 14.1, 13.5, 13.0, 12.8],
 
-    heading:
-      "Hold off booking until the price target is met",
+    heading:"Hold off booking until the price target is met",
+    desc:"Set a rate alert, or confirm manually once the market bottoms out.",
 
-    desc:
-      "Set a rate alert, or confirm manually once the market bottoms out.",
+    baseAllocation: { fixed: 55, quarterly: 25, spot: 20 },
 
     buttons:`
-
-      <button
-        class="btn btn-primary"
-        onclick="confirmBooking('Price drop confirmed — booked at $12.90/ton')">
-
-        Price dropped — confirm &amp; book
-
-      </button>
-
-      <button
-        class="btn btn-secondary"
-        onclick="recordAudit('Price alert set at $12.80/ton','Monitoring')">
-
-        Set price alert
-
-      </button>
-
+      <button class="btn btn-primary" onclick="confirmBooking('Price drop confirmed — booked at $12.90/ton')">Price dropped — confirm &amp; book</button>
+      <button class="btn btn-secondary" onclick="recordAudit('Price alert set at $12.80/ton','Monitoring')">Set price alert</button>
     `
 
   },
@@ -1591,68 +1777,27 @@ const scenarios = {
   LOCK:{
 
     status:"Lock now — book 100%",
-
     barColor:"var(--amber)",
-
     cost:"$16.40 – $17.10 / ton",
-
     risk:"HIGH",
-
     confidence:"94%",
 
     drivers:[
-
-      {
-        color:"var(--red)",
-        label:"Bunker fuel",
-        text:"Prices are surging sharply on geopolitical risk."
-      },
-
-      {
-        color:"var(--red)",
-        label:"Port congestion",
-        text:"Heavy congestion is forecast at eastern Indian ports."
-      },
-
-      {
-        color:"var(--amber)",
-        label:"Tight capacity",
-        text:"Few suitable vessels remain available next week."
-      },
-
-      {
-        color:"var(--steel)",
-        label:"Feasibility",
-        text:"Selected vessel fits berth beam and depth limits."
-      }
-
+      { color:"var(--red)",   label:"Bunker fuel",     text:"Prices are surging sharply on geopolitical risk." },
+      { color:"var(--red)",   label:"Port congestion", text:"Heavy congestion is forecast at eastern Indian ports." },
+      { color:"var(--amber)", label:"Tight capacity",  text:"Few suitable vessels remain available next week." },
+      { color:"var(--steel)", label:"Feasibility",     text:"__VESSEL__ vessel fits berth beam and depth limits." }
     ],
 
-    chartData:[
-      13.5,
-      14.2,
-      15.0,
-      16.4,
-      17.2,
-      18.0
-    ],
+    chartData:[13.5, 14.2, 15.0, 16.4, 17.2, 18.0],
 
-    heading:
-      "Secure full capacity now to avoid further loss",
+    heading:"Secure full capacity now to avoid further loss",
+    desc:"Freight rates are projected to keep climbing over the next 14 days.",
 
-    desc:
-      "Freight rates are projected to keep climbing over the next 14 days.",
+    baseAllocation: { fixed: 70, quarterly: 22, spot: 8 },
 
     buttons:`
-
-      <button
-        class="btn btn-primary"
-        onclick="confirmBooking('100% capacity locked instantly')">
-
-        Approve — lock 100% now
-
-      </button>
-
+      <button class="btn btn-primary" onclick="confirmBooking('100% capacity locked instantly')">Approve — lock 100% now</button>
     `
 
   },
@@ -1661,76 +1806,28 @@ const scenarios = {
   PARTIAL:{
 
     status:"Partial lock — book 40%",
-
     barColor:"var(--amber)",
-
     cost:"$14.20 – $15.50 / ton",
-
     risk:"MEDIUM",
-
     confidence:"87%",
 
     drivers:[
-
-      {
-        color:"var(--amber)",
-        label:"Market uncertainty",
-        text:"Fuel prices are volatile, but vessel supply is stable."
-      },
-
-      {
-        color:"var(--amber)",
-        label:"Risk mitigation",
-        text:"Locking 40% covers base demand and leaves 60% flexible."
-      },
-
-      {
-        color:"var(--steel)",
-        label:"Port limits",
-        text:"Draft requirements are confirmed for Dhamra berth 2."
-      },
-
-      {
-        color:"var(--steel)",
-        label:"Annual alignment",
-        text:"Fits within the quarterly spot allocation limit."
-      }
-
+      { color:"var(--amber)", label:"Market uncertainty", text:"Fuel prices are volatile, but vessel supply is stable." },
+      { color:"var(--amber)", label:"Risk mitigation",    text:"Locking 40% covers base demand and leaves 60% flexible." },
+      { color:"var(--steel)", label:"Port limits",        text:"Draft requirements are confirmed for Dhamra berth 2." },
+      { color:"var(--steel)", label:"Annual alignment",   text:"Fits within the quarterly spot allocation limit." }
     ],
 
-    chartData:[
-      13.2,
-      13.5,
-      13.8,
-      14.2,
-      14.9,
-      15.4
-    ],
+    chartData:[13.2, 13.5, 13.8, 14.2, 14.9, 15.4],
 
-    heading:
-      "Split exposure between locked and flexible capacity",
+    heading:"Split exposure between locked and flexible capacity",
+    desc:"Lock part of the order now and hold the rest until the market steadies.",
 
-    desc:
-      "Lock part of the order now and hold the rest until the market steadies.",
+    baseAllocation: { fixed: 60, quarterly: 25, spot: 15 },
 
     buttons:`
-
-      <button
-        class="btn btn-primary"
-        onclick="confirmBooking('Partial lock (40%) approved')">
-
-        Approve 40% lock
-
-      </button>
-
-      <button
-        class="btn btn-secondary"
-        onclick="recordAudit('Overridden — manual 100% lock','Overridden')">
-
-        Manual override
-
-      </button>
-
+      <button class="btn btn-primary" onclick="confirmBooking('Partial lock (40%) approved')">Approve 40% lock</button>
+      <button class="btn btn-secondary" onclick="recordAudit('Overridden — manual 100% lock','Overridden')">Manual override</button>
     `
 
   }
@@ -1740,83 +1837,48 @@ const scenarios = {
 
 /* ---------- EAST COAST RISK ---------- */
 
-function getPortRisk(destination,scenario){
+function getPortRisk(destination, scenario){
 
-  const eastCoast =
-    destination.includes("Dhamra") ||
-    destination.includes("Paradip") ||
-    destination.includes("Visakhapatnam") ||
-    destination.includes("Haldia");
-
+  const eastCoast = EAST_COAST_PORTS.some(p => destination.includes(p));
 
   if(!eastCoast){
 
     return{
-
       cyclone:"LOW",
-
-      congestion:
-        scenario === "LOCK"
-        ? "HIGH"
-        : "MODERATE",
-
+      congestion: scenario === "LOCK" ? "HIGH" : "MODERATE",
       seasonal:"LOW",
-
-      note:
-        "Destination is outside the core East Coast risk set."
-
+      note:"Destination is outside the core East Coast risk set."
     };
 
   }
-
 
   if(scenario === "LOCK"){
 
     return{
-
       cyclone:"MODERATE",
-
       congestion:"HIGH",
-
       seasonal:"WATCH",
-
-      note:
-        "East Coast seasonal disruption is included in the decision."
-
+      note:"East Coast seasonal disruption is included in the decision."
     };
 
   }
-
 
   if(scenario === "PARTIAL"){
 
     return{
-
       cyclone:"MODERATE",
-
       congestion:"MODERATE",
-
       seasonal:"WATCH",
-
-      note:
-        "Partial locking balances freight exposure against port disruption risk."
-
+      note:"Partial locking balances freight exposure against port disruption risk."
     };
 
   }
 
-
   return{
-
     cyclone:"MODERATE",
-
     congestion:"LOW",
-
     seasonal:"WATCH",
-
-    note:
-      "Seasonal East Coast exposure is monitored while waiting for a better rate."
-
+    note:"Seasonal East Coast exposure is monitored while waiting for a better rate."
   };
 
 }
@@ -1826,84 +1888,65 @@ function getPortRisk(destination,scenario){
 
 function renderPortRisk(scenario){
 
-  const destination =
-    document.getElementById(
-      'destSelect'
-    ).value;
+  const destination = document.getElementById('destSelect').value;
+  const risk = getPortRisk(destination, scenario);
 
+  const cls = value => {
+    if(value === "HIGH") return "risk-high";
+    if(value === "MODERATE" || value === "WATCH") return "risk-medium";
+    return "risk-low";
+  };
 
-  const risk =
-    getPortRisk(
-      destination,
-      scenario
-    );
-
-
-  const cls =
-    value => {
-
-      if(value === "HIGH")
-        return "risk-high";
-
-      if(
-        value === "MODERATE" ||
-        value === "WATCH"
-      )
-        return "risk-medium";
-
-      return "risk-low";
-
-    };
-
-
-  document.getElementById(
-    'riskPanel'
-  ).innerHTML = `
+  document.getElementById('riskPanel').innerHTML = `
 
     <div class="risk-row">
-
-      <span class="risk-name">
-        🌪 Cyclone exposure
-      </span>
-
-      <span class="risk-value ${cls(risk.cyclone)}">
-        ${risk.cyclone}
-      </span>
-
+      <span class="risk-name">🌪 Cyclone exposure</span>
+      <span class="risk-value ${cls(risk.cyclone)}">${risk.cyclone}</span>
     </div>
-
 
     <div class="risk-row">
-
-      <span class="risk-name">
-        ⚓ Port congestion
-      </span>
-
-      <span class="risk-value ${cls(risk.congestion)}">
-        ${risk.congestion}
-      </span>
-
+      <span class="risk-name">⚓ Port congestion</span>
+      <span class="risk-value ${cls(risk.congestion)}">${risk.congestion}</span>
     </div>
-
 
     <div class="risk-row">
-
-      <span class="risk-name">
-        📅 Seasonal disruption
-      </span>
-
-      <span class="risk-value ${cls(risk.seasonal)}">
-        ${risk.seasonal}
-      </span>
-
+      <span class="risk-name">📅 Seasonal disruption</span>
+      <span class="risk-value ${cls(risk.seasonal)}">${risk.seasonal}</span>
     </div>
 
-
-    <div class="risk-note">
-      ${risk.note}
-    </div>
+    <div class="risk-note">${risk.note}</div>
 
   `;
+
+  return risk;
+
+}
+
+
+/* ---------- ANNUAL ALLOCATION ---------- */
+
+function renderAllocation(data){
+
+  const mix = { ...data.baseAllocation };
+
+  // High-risk scenarios shift the mix toward Fixed (less Spot exposure);
+  // low-risk scenarios allow more Spot flexibility. Base mix per scenario
+  // already reflects this; here we just render + note why.
+  document.getElementById('allocFixedPct').innerText = mix.fixed + '%';
+  document.getElementById('allocQuarterlyPct').innerText = mix.quarterly + '%';
+  document.getElementById('allocSpotPct').innerText = mix.spot + '%';
+
+  document.getElementById('allocFixedBar').style.width = mix.fixed + '%';
+  document.getElementById('allocQuarterlyBar').style.width = mix.quarterly + '%';
+  document.getElementById('allocSpotBar').style.width = mix.spot + '%';
+
+  const noteByRisk = {
+    HIGH: "High downside risk shifts the mix toward Fixed contracts to limit spot-market exposure.",
+    MEDIUM: "Moderate risk keeps a balanced mix — enough Fixed cover with room for Spot opportunism.",
+    LOW: "Low downside risk allows a larger Spot allocation to capture favorable short-term rates."
+  };
+
+  document.getElementById('allocationNote').innerText = noteByRisk[data.risk] || '';
 
 }
 
@@ -1912,132 +1955,70 @@ function renderPortRisk(scenario){
 
 function runAnalysis(){
 
-  const type =
-    document.getElementById(
-      'scenarioSelect'
-    ).value;
+  const type = document.getElementById('scenarioSelect').value;
+  const data = { ...scenarios[type] };
 
+  const vessel = document.getElementById('vesselSelect').value;
+  const urgencyDays = getDeliveryUrgency();
 
-  const data =
-    scenarios[type];
+  // Vessel-adjusted cost range
+  data.cost = adjustCostRange(scenarios[type].cost, vessel);
 
+  document.getElementById('output').classList.add('show');
 
-  document.getElementById(
-    'output'
-  ).classList.add('show');
+  document.getElementById('statusText').innerText = data.status;
+  document.querySelector('.banner').style.borderLeftColor = data.barColor;
+  document.getElementById('costVal').innerText = data.cost;
 
+  const riskVal = document.getElementById('riskVal');
+  riskVal.innerText = data.risk;
+  riskVal.className = 'metric-value ' +
+    (data.risk === 'HIGH' ? 'risk-high' : data.risk === 'MEDIUM' ? 'risk-medium' : 'risk-low');
 
-  document.getElementById(
-    'statusText'
-  ).innerText =
-    data.status;
+  document.getElementById('confidenceVal').innerText = data.confidence;
 
+  // Build driver list, substituting vessel, and append a delivery-urgency
+  // driver line when the date is tight.
+  let drivers = data.drivers.map(d => ({
+    color: d.color,
+    label: d.label,
+    text: d.text.replace('__VESSEL__', vessel)
+  }));
 
-  document.querySelector(
-    '.banner'
-  ).style.borderLeftColor =
-    data.barColor;
+  if(urgencyDays !== null && urgencyDays <= 14){
 
+    drivers.push({
+      color: urgencyDays <= 7 ? "var(--red)" : "var(--amber)",
+      label: "Delivery urgency",
+      text: urgencyDays < 0
+        ? `Requested delivery date has already passed — booking cannot wait.`
+        : `Delivery in ${urgencyDays} day${urgencyDays === 1 ? '' : 's'} — limited window to wait for a better rate.`
+    });
 
-  document.getElementById(
-    'costVal'
-  ).innerText =
-    data.cost;
+  }
 
+  document.getElementById('driversList').innerHTML = drivers.map(d => `
 
-  const riskVal =
-    document.getElementById(
-      'riskVal'
-    );
+    <div class="driver">
+      <span class="dot" style="background:${d.color}"></span>
+      <span><b>${d.label}.</b> <span>${d.text}</span></span>
+    </div>
 
+  `).join('');
 
-  riskVal.innerText =
-    data.risk;
-
-
-  riskVal.className =
-    'metric-value ' +
-
-    (
-      data.risk === 'HIGH'
-      ? 'risk-high'
-      : data.risk === 'MEDIUM'
-      ? 'risk-medium'
-      : 'risk-low'
-    );
-
-
-  document.getElementById(
-    'confidenceVal'
-  ).innerText =
-    data.confidence;
-
-
-  const vessel =
-    document.getElementById(
-      'vesselSelect'
-    ).value;
-
-
-  document.getElementById(
-    'driversList'
-  ).innerHTML =
-
-    data.drivers.map(
-      d => `
-
-        <div class="driver">
-
-          <span
-            class="dot"
-            style="background:${d.color}">
-          </span>
-
-          <span>
-
-            <b>
-              ${d.label}.
-            </b>
-
-            <span>
-              ${d.text.replace(
-                '__VESSEL__',
-                vessel
-              )}
-            </span>
-
-          </span>
-
-        </div>
-
-      `
-    ).join('');
-
-
-  document.getElementById(
-    'actionHeading'
-  ).innerText =
-    data.heading;
-
-
-  document.getElementById(
-    'actionDesc'
-  ).innerText =
-    data.desc;
-
-
-  document.getElementById(
-    'actionButtons'
-  ).innerHTML =
-    data.buttons;
-
+  document.getElementById('actionHeading').innerText = data.heading;
+  document.getElementById('actionDesc').innerText = data.desc;
+  document.getElementById('actionButtons').innerHTML = data.buttons;
 
   renderPortRisk(type);
+  renderAllocation(data);
+  renderChart(data.chartData, data.barColor);
 
-  renderChart(
-    data.chartData,
-    data.barColor
-  );
+  lastRunData = data;
+  lastRunType = type;
+
+  document.getElementById('complianceBtn').disabled = false;
+  document.getElementById('complianceBox').classList.remove('show');
 
 }
 
@@ -2046,107 +2027,32 @@ function runAnalysis(){
 
 function confirmBooking(actionName){
 
-  recordAudit(
-    actionName,
-    'Booked'
-  );
+  recordAudit(actionName, 'Booked');
 
+  const scenario = document.getElementById('scenarioSelect').value;
 
-  const scenario =
-    document.getElementById(
-      'scenarioSelect'
-    ).value;
-
-
-  let actual;
-  let predicted;
-
+  let actual, predicted;
 
   if(scenario === 'LOCK'){
-
-    actual = '$16.70/t';
-    predicted = '$16.40/t';
-
+    actual = '$16.70/t'; predicted = '$16.40/t';
+  } else if(scenario === 'PARTIAL'){
+    actual = '$14.35/t'; predicted = '$14.20/t';
+  } else {
+    actual = '$12.84/t'; predicted = '$12.90/t';
   }
 
-  else if(scenario === 'PARTIAL'){
+  const p = parseFloat(predicted.replace('$','').replace('/t',''));
+  const a = parseFloat(actual.replace('$','').replace('/t',''));
+  const variance = Math.abs(((a-p)/p)*100).toFixed(1);
 
-    actual = '$14.35/t';
-    predicted = '$14.20/t';
+  document.getElementById('predictedRate').innerText = predicted;
+  document.getElementById('actualRate').innerText = actual;
+  document.getElementById('varianceRate').innerText = variance + '%';
+  document.getElementById('learningBadge').innerText = 'Feedback recorded';
 
-  }
-
-  else{
-
-    actual = '$12.84/t';
-    predicted = '$12.90/t';
-
-  }
-
-
-  const p =
-    parseFloat(
-      predicted
-        .replace('$','')
-        .replace('/t','')
-    );
-
-
-  const a =
-    parseFloat(
-      actual
-        .replace('$','')
-        .replace('/t','')
-    );
-
-
-  const variance =
-    Math.abs(
-      ((a-p)/p)*100
-    ).toFixed(1);
-
-
-  document.getElementById(
-    'predictedRate'
-  ).innerText =
-    predicted;
-
-
-  document.getElementById(
-    'actualRate'
-  ).innerText =
-    actual;
-
-
-  document.getElementById(
-    'varianceRate'
-  ).innerText =
-    variance + '%';
-
-
-  document.getElementById(
-    'learningBadge'
-  ).innerText =
-    'Feedback recorded';
-
-
-  setTimeout(
-
-    () => {
-
-      recordAudit(
-        'Actual rate vs predicted: ' +
-        variance +
-        '% variance',
-        'Monitoring'
-      );
-
-    },
-
-    900
-
-  );
-
+  setTimeout(() => {
+    recordAudit('Actual rate vs predicted: ' + variance + '% variance', 'Monitoring');
+  }, 900);
 
   showToast(actionName);
 
@@ -2155,94 +2061,84 @@ function confirmBooking(actionName){
 
 /* ---------- AUDIT ---------- */
 
-function recordAudit(
-  actionText,
-  statusTag
-){
+function recordAudit(actionText, statusTag){
 
-  const table =
-    document.getElementById(
-      'auditTable'
-    );
+  const table = document.getElementById('auditTable');
 
+  const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  const randomID = 'SH-2026-0' + Math.floor(10 + Math.random()*90);
 
-  const time =
-    new Date().toLocaleTimeString(
-      [],
-      {
-        hour:'2-digit',
-        minute:'2-digit'
-      }
-    );
-
-
-  const randomID =
-    'SH-2026-0' +
-    Math.floor(
-      10 + Math.random()*90
-    );
-
-
-  const strategy =
-    document.getElementById(
-      'statusText'
-    )
-    .innerText
-    .split(' ')[0]
-    .toUpperCase();
-
+  const strategy = document.getElementById('statusText').innerText.split(' ')[0].toUpperCase();
 
   const pillClass =
-    statusTag === 'Booked'
-    ? 'status-confirmed'
-
-    : statusTag === 'Overridden'
-    ? 'status-overridden'
-
+    statusTag === 'Booked' ? 'status-confirmed'
+    : statusTag === 'Overridden' ? 'status-overridden'
     : 'status-monitoring';
 
-
-  const row =
-    document.createElement('tr');
-
-
-  row.className =
-    'new-row';
-
+  const row = document.createElement('tr');
+  row.className = 'new-row';
 
   row.innerHTML = `
-
-    <td class="mono">
-      ${time}
-    </td>
-
-    <td class="mono">
-      ${randomID}
-    </td>
-
-    <td style="color:var(--text);font-weight:600;">
-      ${strategy}
-    </td>
-
-    <td style="color:var(--text);">
-      ${actionText}
-    </td>
-
-    <td>
-
-      <span
-        class="status-pill ${pillClass}">
-
-        ${statusTag}
-
-      </span>
-
-    </td>
-
+    <td class="mono">${time}</td>
+    <td class="mono">${randomID}</td>
+    <td style="color:var(--text);font-weight:600;">${strategy}</td>
+    <td style="color:var(--text);">${actionText}</td>
+    <td><span class="status-pill ${pillClass}">${statusTag}</span></td>
   `;
 
-
   table.prepend(row);
+
+}
+
+
+/* ---------- COMPLIANCE NOTE ---------- */
+
+function generateComplianceNote(){
+
+  if(!lastRunData) return;
+
+  const data = lastRunData;
+  const origin = document.getElementById('originSelect').value;
+  const dest = document.getElementById('destSelect').value;
+  const vessel = document.getElementById('vesselSelect').value;
+  const tonnage = document.getElementById('tonnageInput').value;
+  const risk = renderPortRisk(lastRunType);
+
+  const dateStr = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
+
+  const reasonLines = [];
+
+  if(data.risk === 'HIGH'){
+    reasonLines.push(`avoid an estimated exposure to further freight escalation, given ${risk.congestion.toLowerCase()} port congestion and ${risk.cyclone.toLowerCase()} cyclone-season risk at the destination`);
+  } else if(data.risk === 'MEDIUM'){
+    reasonLines.push(`balance cost against ${risk.seasonal.toLowerCase()}-status seasonal disruption risk at the destination port`);
+  } else {
+    reasonLines.push(`defer commitment while monitoring a ${risk.congestion.toLowerCase()}-congestion, ${risk.cyclone.toLowerCase()}-cyclone-exposure destination for a more favorable rate`);
+  }
+
+  const note =
+`Shipment: ${origin} → ${dest} | ${tonnage} coking coal | ${vessel} class
+Recommendation: ${data.status} (model confidence ${data.confidence})
+Target freight cost: ${data.cost} | Downside risk classification: ${data.risk}
+
+Justification: This booking strategy was selected to ${reasonLines[0]}. The FreightCompass advisory system evaluated current spot-rate trend, vessel availability, port congestion, and East Coast seasonal risk factors before generating this recommendation. Where this action does not correspond to the lowest quoted freight rate at time of decision, the premium (if any) is considered justified on the grounds of reduced demurrage risk, schedule reliability, and consistency with SAIL's annual freight allocation policy (Fixed/Quarterly/Spot mix).
+
+This note is system-generated for procurement file records and is subject to review under applicable CVC/GFR guidelines. Prepared: ${dateStr}.`;
+
+  document.getElementById('complianceText').innerText = note;
+  document.getElementById('complianceBox').classList.add('show');
+
+}
+
+function copyComplianceNote(){
+
+  const text = document.getElementById('complianceText').innerText;
+
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(text).then(() => showToast('Justification note copied to clipboard'));
+  } else {
+    showToast('Copy not supported in this browser');
+  }
 
 }
 
@@ -2251,174 +2147,78 @@ function recordAudit(
 
 function showToast(msg){
 
-  const toast =
-    document.getElementById(
-      'toast'
-    );
+  const toast = document.getElementById('toast');
 
-
-  document.getElementById(
-    'toastMsg'
-  ).innerText =
-
-    msg +
-    ' — recorded in the decision trail.';
-
+  document.getElementById('toastMsg').innerText = msg + ' — recorded in the decision trail.';
 
   toast.classList.add('show');
 
-
-  clearTimeout(
-    window._toastTimer
-  );
-
-
-  window._toastTimer =
-
-    setTimeout(
-      () =>
-        toast.classList.remove('show'),
-      3200
-    );
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => toast.classList.remove('show'), 3200);
 
 }
 
 
 /* ---------- CHART ---------- */
 
-function renderChart(
-  chartData,
-  accent
-){
+function renderChart(chartData, accent){
 
-  const ctx =
-    document.getElementById(
-      'rateChart'
-    ).getContext('2d');
+  const ctx = document.getElementById('rateChart').getContext('2d');
 
+  if(chartInstance) chartInstance.destroy();
 
-  if(chartInstance)
-    chartInstance.destroy();
+  const style = getComputedStyle(document.documentElement);
 
-
-  const style =
-    getComputedStyle(
-      document.documentElement
-    );
-
-
-  const resolvedAccent =
-    accent.startsWith('var(')
-
-    ? style.getPropertyValue(
-        accent.slice(4,-1)
-      ).trim()
-
+  const resolvedAccent = accent.startsWith('var(')
+    ? style.getPropertyValue(accent.slice(4,-1)).trim()
     : accent;
 
+  chartInstance = new Chart(ctx, {
 
-  chartInstance =
+    type:'line',
 
-    new Chart(
-      ctx,
-      {
+    data:{
 
-        type:'line',
+      labels:['W1','W2','W3','W4 (now)','W5 (fcst)','W6 (fcst)'],
 
-        data:{
+      datasets:[{
+        label:'$ / ton',
+        data:chartData,
+        borderColor:resolvedAccent,
+        backgroundColor:resolvedAccent + '22',
+        pointBackgroundColor:resolvedAccent,
+        fill:true,
+        tension:0.3,
+        borderWidth:2
+      }]
 
-          labels:[
-            'W1',
-            'W2',
-            'W3',
-            'W4 (now)',
-            'W5 (fcst)',
-            'W6 (fcst)'
-          ],
+    },
 
-          datasets:[{
+    options:{
 
-            label:'$ / ton',
+      plugins:{ legend:{ display:false } },
 
-            data:chartData,
+      scales:{
 
-            borderColor:
-              resolvedAccent,
-
-            backgroundColor:
-              resolvedAccent + '22',
-
-            pointBackgroundColor:
-              resolvedAccent,
-
-            fill:true,
-
-            tension:0.3,
-
-            borderWidth:2
-
-          }]
-
+        x:{
+          ticks:{ color:'#8FA3AF', font:{ family:'IBM Plex Mono', size:10.5 } },
+          grid:{ color:'#1D2A33' }
         },
 
-
-        options:{
-
-          plugins:{
-            legend:{
-              display:false
-            }
-          },
-
-          scales:{
-
-            x:{
-
-              ticks:{
-                color:'#8FA3AF',
-
-                font:{
-                  family:'IBM Plex Mono',
-                  size:10.5
-                }
-
-              },
-
-              grid:{
-                color:'#1D2A33'
-              }
-
-            },
-
-
-            y:{
-
-              ticks:{
-                color:'#8FA3AF',
-
-                font:{
-                  family:'IBM Plex Mono',
-                  size:10.5
-                }
-
-              },
-
-              grid:{
-                color:'#1D2A33'
-              }
-
-            }
-
-          }
-
+        y:{
+          ticks:{ color:'#8FA3AF', font:{ family:'IBM Plex Mono', size:10.5 } },
+          grid:{ color:'#1D2A33' }
         }
 
       }
-    );
+
+    }
+
+  });
 
 }
 
 </script>
 
 </body>
-</html>          
+</html>

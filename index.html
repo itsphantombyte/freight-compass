@@ -13,14 +13,14 @@
 <style>
 
 :root{
-  --ink:#24313d;
+  --ink:#0E161D;
   --panel:#141E27;
   --panel-raised:#182430;
   --line:#26343F;
   --line-soft:#1D2A33;
   --text:#E7EEF3;
   --text-dim:#8FA3AF;
-  --text-faint:#6aa1c1;
+  --text-faint:#5D707B;
   --amber:#E8A33D;
   --amber-dim:#3A2C15;
   --teal:#4FB0A0;
@@ -30,14 +30,8 @@
   --red:#D9614F;
 }
 
-*{
-  box-sizing:border-box;
-}
-
-html,body{
-  margin:0;
-  padding:0;
-}
+*{ box-sizing:border-box; }
+html,body{ margin:0; padding:0; }
 
 body{
   background:
@@ -49,14 +43,8 @@ body{
   padding:28px 18px 60px;
 }
 
-.mono{
-  font-family:'IBM Plex Mono', monospace;
-}
-
-.wrap{
-  max-width:1180px;
-  margin:0 auto;
-}
+.mono{ font-family:'IBM Plex Mono', monospace; }
+.wrap{ max-width:1180px; margin:0 auto; }
 
 /* ---------- Header ---------- */
 
@@ -69,6 +57,18 @@ body{
   border-bottom:1px solid var(--line);
 }
 
+.hdr-left{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.hdr-logo{
+  width:44px;
+  height:44px;
+  flex-shrink:0;
+}
+
 .hdr h1{
   font-size:22px;
   font-weight:700;
@@ -76,51 +76,9 @@ body{
   margin:0 0 4px;
 }
 
-.hdr .meta{
-  font-size:11.5px;
-  color:var(--text-faint);
-}
-
-.hdr .tag{
-  font-size:11px;
-  color:var(--text-dim);
-  text-align:right;
-  line-height:1.5;
-}
-
-.hdr .tag b{
-  color:var(--text);
-  font-weight:600;
-}
-
-.lang-toggle{
-  display:inline-flex;
-  border:1px solid var(--line);
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:8px;
-}
-
-.lang-toggle button{
-  border:none;
-  background:var(--panel-raised);
-  color:var(--text-dim);
-  font-size:11px;
-  font-weight:600;
-  padding:5px 12px;
-  cursor:pointer;
-  font-family:inherit;
-}
-
-.lang-toggle button.active{
-  background:var(--steel);
-  color:#0E161D;
-}
-
-.lang-toggle button:focus-visible{
-  outline:2px solid var(--amber);
-  outline-offset:-2px;
-}
+.hdr .meta{ font-size:11.5px; color:var(--text-faint); }
+.hdr .tag{ font-size:11px; color:var(--text-dim); text-align:right; line-height:1.5; }
+.hdr .tag b{ color:var(--text); font-weight:600; }
 
 /* ---------- Route ---------- */
 
@@ -135,21 +93,9 @@ body{
   margin-bottom:22px;
 }
 
-.route .port{
-  min-width:180px;
-  position:relative;
-}
-
-.route .port .code{
-  font-size:10.5px;
-  color:var(--text-faint);
-  letter-spacing:0.04em;
-  margin-bottom:4px;
-}
-
-.route .port.dest{
-  text-align:right;
-}
+.route .port{ min-width:180px; position:relative; }
+.route .port .code{ font-size:10.5px; color:var(--text-faint); letter-spacing:0.04em; margin-bottom:4px; }
+.route .port.dest{ text-align:right; }
 
 .route .port input{
   background:transparent;
@@ -163,23 +109,10 @@ body{
   width:100%;
 }
 
-.route .port.dest input{
-  text-align:right;
-}
-
-.route .port input::placeholder{
-  color:var(--text-faint);
-  font-weight:400;
-}
-
-.route .port input:hover{
-  border-bottom-color:var(--line);
-}
-
-.route .port input:focus-visible{
-  outline:none;
-  border-bottom-color:var(--amber);
-}
+.route .port.dest input{ text-align:right; }
+.route .port input::placeholder{ color:var(--text-faint); font-weight:400; }
+.route .port input:hover{ border-bottom-color:var(--line); }
+.route .port input:focus-visible{ outline:none; border-bottom-color:var(--amber); }
 
 .route .line{
   flex:1;
@@ -201,13 +134,8 @@ body{
   background:var(--text-faint);
 }
 
-.route .line::before{
-  left:-2px;
-}
-
-.route .line::after{
-  right:-2px;
-}
+.route .line::before{ left:-2px; }
+.route .line::after{ right:-2px; }
 
 .route .ship{
   position:absolute;
@@ -218,19 +146,8 @@ body{
   color:var(--amber);
 }
 
-.route .cargo{
-  min-width:150px;
-  text-align:center;
-  font-size:12px;
-  color:var(--text-dim);
-}
-
-.route .cargo b{
-  display:block;
-  color:var(--text);
-  font-size:13.5px;
-  font-weight:600;
-}
+.route .cargo{ min-width:150px; text-align:center; font-size:12px; color:var(--text-dim); }
+.route .cargo b{ display:block; color:var(--text); font-size:13.5px; font-weight:600; }
 
 /* ---------- Controls ---------- */
 
@@ -246,12 +163,7 @@ body{
   margin-bottom:22px;
 }
 
-.controls label{
-  font-size:11px;
-  color:var(--text-faint);
-  display:block;
-  margin-bottom:5px;
-}
+.controls label{ font-size:11px; color:var(--text-faint); display:block; margin-bottom:5px; }
 
 select{
   background:var(--panel-raised);
@@ -265,10 +177,7 @@ select{
   cursor:pointer;
 }
 
-select:focus-visible{
-  outline:2px solid var(--steel);
-  outline-offset:1px;
-}
+select:focus-visible{ outline:2px solid var(--steel); outline-offset:1px; }
 
 .tonnage-input{
   background:var(--panel-raised);
@@ -281,24 +190,12 @@ select:focus-visible{
   width:140px;
 }
 
-.tonnage-input:focus-visible{
-  outline:2px solid var(--steel);
-  outline-offset:1px;
-}
+.tonnage-input:focus-visible{ outline:2px solid var(--steel); outline-offset:1px; }
 
 /* ---------- Delivery Date ---------- */
 
-.delivery-date{
-  display:flex;
-  flex-direction:column;
-}
-
-.delivery-date label{
-  font-size:11px;
-  color:var(--text-faint);
-  display:block;
-  margin-bottom:5px;
-}
+.delivery-date{ display:flex; flex-direction:column; }
+.delivery-date label{ font-size:11px; color:var(--text-faint); display:block; margin-bottom:5px; }
 
 .delivery-date input{
   background:var(--panel-raised);
@@ -310,10 +207,7 @@ select:focus-visible{
   font-family:inherit;
 }
 
-.delivery-date input:focus-visible{
-  outline:2px solid var(--steel);
-  outline-offset:1px;
-}
+.delivery-date input:focus-visible{ outline:2px solid var(--steel); outline-offset:1px; }
 
 .run-btn{
   margin-left:auto;
@@ -327,24 +221,12 @@ select:focus-visible{
   cursor:pointer;
 }
 
-.run-btn:hover{
-  background:#f0ae4c;
-}
-
-.run-btn:focus-visible{
-  outline:2px solid var(--text);
-  outline-offset:2px;
-}
+.run-btn:hover{ background:#f0ae4c; }
 
 /* ---------- Output ---------- */
 
-#output{
-  display:none;
-}
-
-#output.show{
-  display:block;
-}
+#output{ display:none; }
+#output.show{ display:block; }
 
 /* ---------- Recommendation Banner ---------- */
 
@@ -362,27 +244,12 @@ select:focus-visible{
   flex-wrap:wrap;
 }
 
-.banner .strategy{
-  font-size:11px;
-  color:var(--text-faint);
-  letter-spacing:0.03em;
-  margin-bottom:6px;
-}
-
-.banner .status{
-  font-size:24px;
-  font-weight:700;
-  letter-spacing:-0.01em;
-}
+.banner .strategy{ font-size:11px; color:var(--text-faint); letter-spacing:0.03em; margin-bottom:6px; }
+.banner .status{ font-size:24px; font-weight:700; letter-spacing:-0.01em; }
 
 /* ---------- Metrics ---------- */
 
-.metrics{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  min-width:390px;
-}
+.metrics{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; min-width:390px; }
 
 .metric{
   background:var(--panel-raised);
@@ -392,38 +259,16 @@ select:focus-visible{
   min-width:115px;
 }
 
-.metric-label{
-  font-size:10px;
-  color:var(--text-faint);
-  letter-spacing:0.04em;
-  margin-bottom:4px;
-}
+.metric-label{ font-size:10px; color:var(--text-faint); letter-spacing:0.04em; margin-bottom:4px; }
+.metric-value{ font:600 16px 'IBM Plex Mono',monospace; color:var(--text); }
 
-.metric-value{
-  font:600 16px 'IBM Plex Mono',monospace;
-  color:var(--text);
-}
-
-.risk-high{
-  color:var(--red);
-}
-
-.risk-medium{
-  color:var(--amber);
-}
-
-.risk-low{
-  color:var(--teal);
-}
+.risk-high{ color:var(--red); }
+.risk-medium{ color:var(--amber); }
+.risk-low{ color:var(--teal); }
 
 /* ---------- Main Grid ---------- */
 
-.grid2{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin-bottom:18px;
-}
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
 
 .panel{
   background:var(--panel);
@@ -453,35 +298,14 @@ select:focus-visible{
   line-height:1.5;
 }
 
-.driver:last-child{
-  border-bottom:none;
-}
-
-.driver .dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  margin-top:6px;
-  flex-shrink:0;
-}
-
-.driver b{
-  color:var(--text);
-  font-weight:600;
-}
-
-.driver span{
-  color:var(--text-dim);
-}
+.driver:last-child{ border-bottom:none; }
+.driver .dot{ width:7px; height:7px; border-radius:50%; margin-top:6px; flex-shrink:0; }
+.driver b{ color:var(--text); font-weight:600; }
+.driver span{ color:var(--text-dim); }
 
 /* ---------- Extra Panels ---------- */
 
-.mini-grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:18px;
-  margin-bottom:18px;
-}
+.mini-grid{ display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-bottom:18px; }
 
 /* ---------- East Coast Risk ---------- */
 
@@ -494,33 +318,14 @@ select:focus-visible{
   font-size:12.5px;
 }
 
-.risk-row:last-child{
-  border-bottom:none;
-}
-
-.risk-name{
-  color:var(--text-dim);
-}
-
-.risk-value{
-  font:600 11px 'IBM Plex Mono',monospace;
-}
-
-.risk-note{
-  font-size:11px;
-  color:var(--text-faint);
-  margin-top:10px;
-  line-height:1.45;
-}
+.risk-row:last-child{ border-bottom:none; }
+.risk-name{ color:var(--text-dim); }
+.risk-value{ font:600 11px 'IBM Plex Mono',monospace; }
+.risk-note{ font-size:11px; color:var(--text-faint); margin-top:10px; line-height:1.45; }
 
 /* ---------- Annual Allocation ---------- */
 
-.allocation{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:5px;
-}
+.allocation{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:5px; }
 
 .alloc-item{
   padding:10px;
@@ -529,31 +334,11 @@ select:focus-visible{
   border-radius:7px;
 }
 
-.alloc-head{
-  display:flex;
-  justify-content:space-between;
-  font-size:11px;
-  color:var(--text-dim);
-  margin-bottom:7px;
-}
+.alloc-head{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim); margin-bottom:7px; }
+.alloc-head b{ color:var(--text); }
 
-.alloc-head b{
-  color:var(--text);
-}
-
-.alloc-bar{
-  height:6px;
-  background:var(--line);
-  border-radius:4px;
-  overflow:hidden;
-}
-
-.alloc-fill{
-  height:100%;
-  background:var(--steel);
-  border-radius:4px;
-  transition:width .3s ease;
-}
+.alloc-bar{ height:6px; background:var(--line); border-radius:4px; overflow:hidden; }
+.alloc-fill{ height:100%; background:var(--steel); border-radius:4px; }
 
 /* ---------- Action ---------- */
 
@@ -570,73 +355,21 @@ select:focus-visible{
   flex-wrap:wrap;
 }
 
-.action h4{
-  font-size:14.5px;
-  font-weight:600;
-  margin:0 0 4px;
-}
+.action h4{ font-size:14.5px; font-weight:600; margin:0 0 4px; }
+.action p{ font-size:12px; color:var(--text-dim); margin:0; }
+.action .btns{ display:flex; gap:10px; flex-wrap:wrap; }
 
-.action p{
-  font-size:12px;
-  color:var(--text-dim);
-  margin:0;
-}
-
-.action .btns{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.btn{
-  border:none;
-  border-radius:7px;
-  padding:10px 16px;
-  font-size:13px;
-  font-weight:600;
-  cursor:pointer;
-}
-
-.btn:hover{
-  filter:brightness(1.1);
-}
-
-.btn:focus-visible{
-  outline:2px solid var(--text);
-  outline-offset:2px;
-}
-
-.btn-primary{
-  background:var(--amber);
-  color:#1A1204;
-}
-
-.btn-secondary{
-  background:var(--panel-raised);
-  color:var(--text);
-  border:1px solid var(--line);
-}
+.btn{ border:none; border-radius:7px; padding:10px 16px; font-size:13px; font-weight:600; cursor:pointer; }
+.btn:hover{ filter:brightness(1.1); }
+.btn-primary{ background:var(--amber); color:#1A1204; }
+.btn-secondary{ background:var(--panel-raised); color:var(--text); border:1px solid var(--line); }
 
 /* ---------- Ledger ---------- */
 
-.ledger h3{
-  font-size:13px;
-  font-weight:600;
-  margin:0 0 2px;
-  color:var(--text-dim);
-}
+.ledger h3{ font-size:13px; font-weight:600; margin:0 0 2px; color:var(--text-dim); }
+.ledger .sub{ font-size:11px; color:var(--text-faint); margin-bottom:14px; }
 
-.ledger .sub{
-  font-size:11px;
-  color:var(--text-faint);
-  margin-bottom:14px;
-}
-
-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:12px;
-}
+table{ width:100%; border-collapse:collapse; font-size:12px; }
 
 thead th{
   text-align:left;
@@ -648,42 +381,14 @@ thead th{
   border-bottom:1px solid var(--line);
 }
 
-tbody td{
-  padding:10px;
-  border-bottom:1px solid var(--line-soft);
-  color:var(--text-dim);
-}
+tbody td{ padding:10px; border-bottom:1px solid var(--line-soft); color:var(--text-dim); }
+tbody tr:last-child td{ border-bottom:none; }
+tbody tr.new-row{ background:rgba(232,163,61,0.06); }
 
-tbody tr:last-child td{
-  border-bottom:none;
-}
-
-tbody tr.new-row{
-  background:rgba(232,163,61,0.06);
-}
-
-.status-pill{
-  font-size:10.5px;
-  font-weight:600;
-  padding:3px 9px;
-  border-radius:20px;
-  display:inline-block;
-}
-
-.status-confirmed{
-  background:var(--teal-dim);
-  color:var(--teal);
-}
-
-.status-monitoring{
-  background:var(--steel-dim);
-  color:var(--steel);
-}
-
-.status-overridden{
-  background:var(--amber-dim);
-  color:var(--amber);
-}
+.status-pill{ font-size:10.5px; font-weight:600; padding:3px 9px; border-radius:20px; display:inline-block; }
+.status-confirmed{ background:var(--teal-dim); color:var(--teal); }
+.status-monitoring{ background:var(--steel-dim); color:var(--steel); }
+.status-overridden{ background:var(--amber-dim); color:var(--amber); }
 
 /* ---------- Learning ---------- */
 
@@ -699,21 +404,9 @@ tbody tr.new-row{
   border-radius:8px;
 }
 
-.learning-title{
-  font-size:11px;
-  color:var(--text-faint);
-  margin-bottom:4px;
-  letter-spacing:0.03em;
-}
-
-.learning-main{
-  font-size:12.5px;
-  color:var(--text);
-}
-
-.learning-main b{
-  font-family:'IBM Plex Mono',monospace;
-}
+.learning-title{ font-size:11px; color:var(--text-faint); margin-bottom:4px; letter-spacing:0.03em; }
+.learning-main{ font-size:12.5px; color:var(--text); }
+.learning-main b{ font-family:'IBM Plex Mono',monospace; }
 
 .learning-badge{
   font-size:10.5px;
@@ -723,69 +416,6 @@ tbody tr.new-row{
   background:var(--teal-dim);
   color:var(--teal);
   white-space:nowrap;
-}
-
-/* ---------- Compliance note ---------- */
-
-.compliance{
-  margin-top:18px;
-}
-
-.compliance-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:14px;
-  flex-wrap:wrap;
-}
-
-.compliance-head p{
-  font-size:12px;
-  color:var(--text-dim);
-  margin:4px 0 0;
-  max-width:520px;
-}
-
-.compliance-box{
-  margin-top:14px;
-  background:var(--panel-raised);
-  border:1px solid var(--line);
-  border-left:3px solid var(--teal);
-  border-radius:8px;
-  padding:14px 16px;
-  font-size:12.5px;
-  line-height:1.6;
-  color:var(--text-dim);
-  display:none;
-  white-space:pre-line;
-}
-
-.compliance-box.show{
-  display:block;
-}
-
-.compliance-box .cn-title{
-  font-size:10.5px;
-  letter-spacing:0.04em;
-  color:var(--text-faint);
-  margin-bottom:8px;
-}
-
-.compliance-copy{
-  margin-top:10px;
-  background:transparent;
-  border:1px solid var(--line);
-  color:var(--text-dim);
-  border-radius:6px;
-  padding:6px 12px;
-  font-size:11px;
-  cursor:pointer;
-  font-family:inherit;
-}
-
-.compliance-copy:hover{
-  color:var(--text);
-  border-color:var(--steel);
 }
 
 /* ---------- Toast ---------- */
@@ -811,46 +441,20 @@ tbody tr.new-row{
   z-index:50;
 }
 
-#toast.show{
-  opacity:1;
-  transform:translate(-50%, 0);
-}
-
-#toast .dot{
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--teal);
-}
+#toast.show{ opacity:1; transform:translate(-50%, 0); }
+#toast .dot{ width:7px; height:7px; border-radius:50%; background:var(--teal); }
 
 /* ---------- Responsive ---------- */
 
 @media(max-width:840px){
-
-  .grid2{
-    grid-template-columns:1fr;
-  }
-
-  .mini-grid{
-    grid-template-columns:1fr;
-  }
-
-  .metrics{
-    min-width:100%;
-  }
-
+  .grid2{ grid-template-columns:1fr; }
+  .mini-grid{ grid-template-columns:1fr; }
+  .metrics{ min-width:100%; }
 }
 
 @media(max-width:560px){
-
-  .metrics{
-    grid-template-columns:1fr;
-  }
-
-  .allocation{
-    grid-template-columns:1fr;
-  }
-
+  .metrics{ grid-template-columns:1fr; }
+  .allocation{ grid-template-columns:1fr; }
 }
 
 </style>
@@ -864,28 +468,69 @@ tbody tr.new-row{
 
 <div class="hdr">
 
-  <div>
+  <div class="hdr-left">
 
-    <h1 data-i18n="title">FreightCompass</h1>
+    <svg class="hdr-logo" viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <path id="textArc" d="M 148.5,213.1 A 108,108 0 0 1 351.5,213.1" />
+        <filter id="dropshadow" x="-30%" y="-30%" width="160%" height="160%">
+          <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.25"/>
+        </filter>
+        <g id="handle">
+          <rect x="150" y="-7" width="45" height="14" rx="7" fill="#111"/>
+          <circle cx="205" cy="0" r="15" fill="#111"/>
+        </g>
+      </defs>
 
-    <div class="meta" data-i18n="subtitle">
-      SIH 2026 · Problem ID SIH26006 · Team Stacked Brainers
+      <g filter="url(#dropshadow)">
+        <use href="#handle" transform="translate(250,250) rotate(0)"/>
+        <use href="#handle" transform="translate(250,250) rotate(45)"/>
+        <use href="#handle" transform="translate(250,250) rotate(90)"/>
+        <use href="#handle" transform="translate(250,250) rotate(135)"/>
+        <use href="#handle" transform="translate(250,250) rotate(180)"/>
+        <use href="#handle" transform="translate(250,250) rotate(225)"/>
+        <use href="#handle" transform="translate(250,250) rotate(270)"/>
+        <use href="#handle" transform="translate(250,250) rotate(315)"/>
+      </g>
+
+      <circle cx="250" cy="250" r="150" fill="none" stroke="#111" stroke-width="5"/>
+      <circle cx="250" cy="250" r="138" fill="#ffffff" stroke="#2b7fd6" stroke-width="16"/>
+      <circle cx="250" cy="250" r="129" fill="none" stroke="#111" stroke-width="1.5"/>
+
+      <text font-family="Georgia, 'Times New Roman', serif" font-size="22" font-weight="bold" fill="#111" letter-spacing="1.5">
+        <textPath href="#textArc" startOffset="50%" text-anchor="middle">
+          &#9733; FREIGHT COMPASS &#9733;
+        </textPath>
+      </text>
+
+      <g fill="#111">
+        <rect x="247" y="175" width="4" height="140"/>
+        <path d="M 251,177 L 285,185 L 251,197 Z" fill="#d62828"/>
+
+        <path d="M 249,200 C 225,203 215,220 220,230 L 249,230 Z"/>
+        <path d="M 251,200 C 275,203 285,220 280,230 L 251,230 Z"/>
+
+        <path d="M 249,233 C 215,237 203,257 210,270 C 225,263 237,267 249,267 Z"/>
+        <path d="M 251,233 C 285,237 297,257 290,270 C 275,263 263,267 251,267 Z"/>
+
+        <path d="M 249,270 C 205,275 190,295 197,310 C 215,301 233,305 249,305 Z"/>
+        <path d="M 251,270 C 295,275 310,295 303,310 C 285,301 267,305 251,305 Z"/>
+
+        <path d="M 180,310 L 320,310 L 303,345 L 197,345 Z"/>
+        <rect x="165" y="303" width="16" height="4"/>
+      </g>
+    </svg>
+
+    <div>
+      <h1>FreightCompass</h1>
+      <div class="meta">SIH 2026 · Problem ID SIH26006 · Team Stacked Brainers</div>
     </div>
 
   </div>
 
-  <div style="text-align:right;">
-
-    <div class="tag">
-      <span data-i18n="portal">SAIL Procurement Portal</span><br>
-      <b data-i18n="advisory">Freight Strategy Advisory</b>
-    </div>
-
-    <div class="lang-toggle" role="group" aria-label="Language">
-      <button type="button" id="langEnBtn" class="active" onclick="setLang('en')">EN</button>
-      <button type="button" id="langHiBtn" onclick="setLang('hi')">हिं</button>
-    </div>
-
+  <div class="tag">
+    SAIL Procurement Portal<br>
+    <b>Freight Strategy Advisory</b>
   </div>
 
 </div>
@@ -896,61 +541,24 @@ tbody tr.new-row{
 <div class="route">
 
   <div class="port">
-
-    <div class="code mono" data-i18n="origin">
-      ORIGIN — type or pick
-    </div>
-
-    <input
-      type="text"
-      id="originSelect"
-      list="originList"
-      oninput="updateRoute()"
-      placeholder="e.g. AU · Newcastle"
-    >
-
+    <div class="code mono">ORIGIN — type or pick</div>
+    <input type="text" id="originSelect" list="originList" oninput="updateRoute()" placeholder="e.g. AU · Newcastle">
     <datalist id="originList"></datalist>
-
   </div>
 
-
-  <div class="line">
-    <span class="ship">▶</span>
-  </div>
-
+  <div class="line"><span class="ship">▶</span></div>
 
   <div class="cargo">
-
-    <span data-i18n="cargoLabel">Coking Coal</span>
-
-    <b class="mono" id="cargoTonnageDisplay">
-      75,000 MT
-    </b>
-
+    Coking Coal
+    <b class="mono">75,000 MT</b>
   </div>
 
-
-  <div class="line">
-    <span class="ship">▶</span>
-  </div>
-
+  <div class="line"><span class="ship">▶</span></div>
 
   <div class="port dest">
-
-    <div class="code mono" data-i18n="destination">
-      DESTINATION — type or pick
-    </div>
-
-    <input
-      type="text"
-      id="destSelect"
-      list="destList"
-      oninput="updateRoute()"
-      placeholder="e.g. IN · Dhamra"
-    >
-
+    <div class="code mono">DESTINATION — type or pick</div>
+    <input type="text" id="destSelect" list="destList" oninput="updateRoute()" placeholder="e.g. IN · Dhamra">
     <datalist id="destList"></datalist>
-
   </div>
 
 </div>
@@ -961,103 +569,36 @@ tbody tr.new-row{
 <div class="controls">
 
   <div>
-
-    <label for="vesselSelect" data-i18n="vesselLabel">
-      Vessel / deck class
-    </label>
-
+    <label for="vesselSelect">Vessel / deck class</label>
     <select id="vesselSelect" onchange="updateRoute()">
-
-      <option value="Capesize">
-        Capesize (~180,000 DWT)
-      </option>
-
-      <option value="Panamax">
-        Panamax (~80,000 DWT)
-      </option>
-
-      <option value="Supramax">
-        Supramax (~58,000 DWT)
-      </option>
-
-      <option value="Handymax">
-        Handymax (~45,000 DWT)
-      </option>
-
-      <option value="Handysize">
-        Handysize (~30,000 DWT)
-      </option>
-
+      <option value="Capesize">Capesize (~180,000 DWT)</option>
+      <option value="Panamax">Panamax (~80,000 DWT)</option>
+      <option value="Supramax">Supramax (~58,000 DWT)</option>
+      <option value="Handymax">Handymax (~45,000 DWT)</option>
+      <option value="Handysize">Handysize (~30,000 DWT)</option>
     </select>
-
   </div>
-
 
   <div>
-
-    <label for="tonnageInput" data-i18n="tonnageLabel">
-      Cargo tonnage
-    </label>
-
-    <input
-      type="text"
-      id="tonnageInput"
-      value="75,000 MT"
-      oninput="updateRoute()"
-      class="tonnage-input"
-    >
-
+    <label for="tonnageInput">Cargo tonnage</label>
+    <input type="text" id="tonnageInput" value="75,000 MT" oninput="updateRoute()" class="tonnage-input">
   </div>
-
 
   <div class="delivery-date">
-
-    <label for="deliveryDate" data-i18n="deliveryLabel">
-      Delivery date
-    </label>
-
-    <input
-      type="date"
-      id="deliveryDate"
-      onchange="updateRoute()"
-    >
-
+    <label for="deliveryDate">Delivery date</label>
+    <input type="date" id="deliveryDate">
   </div>
-
 
   <div>
-
-    <label for="scenarioSelect" data-i18n="scenarioLabel">
-      Market scenario (demo input)
-    </label>
-
+    <label for="scenarioSelect">Market scenario (demo input)</label>
     <select id="scenarioSelect">
-
-      <option value="WAIT">
-        Scenario 1 — Prices trending down
-      </option>
-
-      <option value="LOCK">
-        Scenario 2 — Prices trending up
-      </option>
-
-      <option value="PARTIAL">
-        Scenario 3 — High volatility
-      </option>
-
+      <option value="WAIT">Scenario 1 — Prices trending down</option>
+      <option value="LOCK">Scenario 2 — Prices trending up</option>
+      <option value="PARTIAL">Scenario 3 — High volatility</option>
     </select>
-
   </div>
 
-
-  <button
-    class="run-btn"
-    id="runBtn"
-    onclick="runAnalysis()"
-    data-i18n="runBtn"
-  >
-    Run AI Analysis
-  </button>
+  <button class="run-btn" onclick="runAnalysis()">Run AI Analysis</button>
 
 </div>
 
@@ -1066,411 +607,128 @@ tbody tr.new-row{
 
 <div id="output">
 
-
-  <!-- AI RESULT -->
-
   <div class="banner">
 
     <div>
-
-      <div class="strategy mono" data-i18n="aiRec">
-        AI RECOMMENDATION
-      </div>
-
-      <div
-        class="status"
-        id="statusText">
-      </div>
-
+      <div class="strategy mono">AI RECOMMENDATION</div>
+      <div class="status" id="statusText"></div>
     </div>
 
-
-    <!-- COST / RISK / CONFIDENCE -->
-
     <div class="metrics">
-
       <div class="metric">
-
-        <div class="metric-label" data-i18n="costLabel">
-          COST
-        </div>
-
-        <div
-          class="metric-value"
-          id="costVal">
-          —
-        </div>
-
+        <div class="metric-label">COST</div>
+        <div class="metric-value" id="costVal">—</div>
       </div>
-
-
       <div class="metric">
-
-        <div class="metric-label" data-i18n="riskLabel">
-          DOWNSIDE RISK
-        </div>
-
-        <div
-          class="metric-value"
-          id="riskVal">
-          —
-        </div>
-
+        <div class="metric-label">DOWNSIDE RISK</div>
+        <div class="metric-value" id="riskVal">—</div>
       </div>
-
-
       <div class="metric">
-
-        <div class="metric-label" data-i18n="confLabel">
-          CONFIDENCE
-        </div>
-
-        <div
-          class="metric-value"
-          id="confidenceVal">
-          —
-        </div>
-
+        <div class="metric-label">CONFIDENCE</div>
+        <div class="metric-value" id="confidenceVal">—</div>
       </div>
-
     </div>
 
   </div>
 
-
-  <!-- DRIVERS + CHART -->
 
   <div class="grid2">
 
-
     <div class="panel">
-
-      <h3 data-i18n="whyHeading">
-        Why the model recommends this
-      </h3>
-
+      <h3>Why the model recommends this</h3>
       <div id="driversList"></div>
-
     </div>
 
-
     <div class="panel">
-
-      <h3 data-i18n="forecastHeading">
-        Freight cost forecast ($ / ton)
-      </h3>
-
-      <canvas
-        id="rateChart"
-        height="170">
-      </canvas>
-
+      <h3>Freight cost forecast ($ / ton)</h3>
+      <canvas id="rateChart" height="170"></canvas>
     </div>
 
   </div>
 
-
-  <!-- NEW RISK + ANNUAL PLAN -->
 
   <div class="mini-grid">
 
-
-    <!-- EAST COAST RISK -->
-
     <div class="panel">
-
-      <h3 data-i18n="riskHeading">
-        East Coast risk monitor
-      </h3>
-
+      <h3>East Coast risk monitor</h3>
       <div id="riskPanel"></div>
-
     </div>
 
-
-    <!-- ANNUAL ALLOCATION -->
-
     <div class="panel">
+      <h3>Annual freight allocation</h3>
 
-      <h3 data-i18n="allocHeading">
-        Annual freight allocation
-      </h3>
-
-      <div class="allocation" id="allocationGrid">
-
+      <div class="allocation">
 
         <div class="alloc-item">
-
-          <div class="alloc-head">
-
-            <span data-i18n="allocFixed">
-              Fixed
-            </span>
-
-            <b id="allocFixedPct">
-              60%
-            </b>
-
-          </div>
-
-          <div class="alloc-bar">
-
-            <div
-              class="alloc-fill"
-              id="allocFixedBar"
-              style="width:60%">
-            </div>
-
-          </div>
-
+          <div class="alloc-head"><span>Fixed</span><b>60%</b></div>
+          <div class="alloc-bar"><div class="alloc-fill" style="width:60%"></div></div>
         </div>
 
-
         <div class="alloc-item">
-
-          <div class="alloc-head">
-
-            <span data-i18n="allocQuarterly">
-              Quarterly
-            </span>
-
-            <b id="allocQuarterlyPct">
-              25%
-            </b>
-
-          </div>
-
-          <div class="alloc-bar">
-
-            <div
-              class="alloc-fill"
-              id="allocQuarterlyBar"
-              style="width:25%">
-            </div>
-
-          </div>
-
+          <div class="alloc-head"><span>Quarterly</span><b>25%</b></div>
+          <div class="alloc-bar"><div class="alloc-fill" style="width:25%"></div></div>
         </div>
 
-
         <div class="alloc-item">
-
-          <div class="alloc-head">
-
-            <span data-i18n="allocSpot">
-              Spot
-            </span>
-
-            <b id="allocSpotPct">
-              15%
-            </b>
-
-          </div>
-
-          <div class="alloc-bar">
-
-            <div
-              class="alloc-fill"
-              id="allocSpotBar"
-              style="width:15%">
-            </div>
-
-          </div>
-
+          <div class="alloc-head"><span>Spot</span><b>15%</b></div>
+          <div class="alloc-bar"><div class="alloc-fill" style="width:15%"></div></div>
         </div>
 
       </div>
 
-
-      <div class="risk-note" id="allocationNote">
-
-        Recommended mix keeps a controlled portion flexible
-        for market opportunities.
-
-      </div>
+      <div class="risk-note">Recommended mix keeps a controlled portion flexible for market opportunities.</div>
 
     </div>
 
   </div>
 
-
-  <!-- HUMAN APPROVAL -->
 
   <div class="action">
-
     <div>
-
       <h4 id="actionHeading"></h4>
-
       <p id="actionDesc"></p>
-
     </div>
-
-    <div
-      class="btns"
-      id="actionButtons">
-    </div>
-
+    <div class="btns" id="actionButtons"></div>
   </div>
 
-
-  <!-- AUDIT TRAIL -->
 
   <div class="panel ledger">
 
-    <h3 data-i18n="auditHeading">
-      Auditable decision trail
-    </h3>
-
-    <div class="sub" data-i18n="auditSub">
-
-      Every recommendation and manager action is logged
-      for procurement compliance.
-
-    </div>
-
+    <h3>Auditable decision trail</h3>
+    <div class="sub">Every recommendation and manager action is logged for procurement compliance.</div>
 
     <table>
-
       <thead>
-
         <tr>
-
-          <th data-i18n="colTime">
-            Time
-          </th>
-
-          <th data-i18n="colShipment">
-            Shipment ID
-          </th>
-
-          <th data-i18n="colStrategy">
-            AI strategy
-          </th>
-
-          <th data-i18n="colAction">
-            Action taken
-          </th>
-
-          <th data-i18n="colStatus">
-            Status
-          </th>
-
+          <th>Time</th>
+          <th>Shipment ID</th>
+          <th>AI strategy</th>
+          <th>Action taken</th>
+          <th>Status</th>
         </tr>
-
       </thead>
 
-
       <tbody id="auditTable">
-
         <tr>
-
-          <td class="mono">
-            09:30 AM
-          </td>
-
-          <td class="mono">
-            SH-2026-088
-          </td>
-
-          <td style="color:var(--text);font-weight:600;">
-            LOCK NOW
-          </td>
-
-          <td style="color:var(--text);">
-            Manager sign-off
-          </td>
-
-          <td>
-            <span class="status-pill status-confirmed">
-              Confirmed
-            </span>
-          </td>
-
+          <td class="mono">09:30 AM</td>
+          <td class="mono">SH-2026-088</td>
+          <td style="color:var(--text);font-weight:600;">LOCK NOW</td>
+          <td style="color:var(--text);">Manager sign-off</td>
+          <td><span class="status-pill status-confirmed">Confirmed</span></td>
         </tr>
-
       </tbody>
-
     </table>
 
-
-    <!-- LEARNING FEEDBACK -->
-
     <div class="learning">
-
       <div>
-
-        <div class="learning-title" data-i18n="learnHeading">
-          LEARN FROM RESULTS
-        </div>
-
+        <div class="learning-title">LEARN FROM RESULTS</div>
         <div class="learning-main">
-
-          <span data-i18n="predicted">Predicted</span>
-          <b id="predictedRate">
-            $12.90/t
-          </b>
-
-          · <span data-i18n="actual">Actual</span>
-
-          <b id="actualRate">
-            —
-          </b>
-
-          · <span data-i18n="variance">Variance</span>
-
-          <b id="varianceRate">
-            —
-          </b>
-
+          Predicted <b id="predictedRate">$12.90/t</b>
+          · Actual <b id="actualRate">—</b>
+          · Variance <b id="varianceRate">—</b>
         </div>
-
       </div>
-
-
-      <div
-        class="learning-badge"
-        id="learningBadge"
-        data-i18n="awaitingBooking">
-
-        Awaiting booking
-
-      </div>
-
-    </div>
-
-
-    <!-- COMPLIANCE NOTE -->
-
-    <div class="compliance">
-
-      <div class="compliance-head">
-
-        <div>
-          <h3 style="margin-bottom:0;" data-i18n="complianceHeading">Vigilance justification note</h3>
-          <p data-i18n="complianceSub">
-            Auto-drafts the CVC/GFR-compliant paragraph explaining why this booking is
-            defensible even when it is not the lowest quoted price.
-          </p>
-        </div>
-
-        <button
-          class="btn btn-secondary"
-          id="complianceBtn"
-          onclick="generateComplianceNote()"
-          disabled
-          data-i18n="complianceBtn">
-          Generate justification note
-        </button>
-
-      </div>
-
-      <div class="compliance-box" id="complianceBox">
-        <div class="cn-title" data-i18n="complianceBoxTitle">DRAFT — FOR PROCUREMENT FILE</div>
-        <div id="complianceText"></div>
-        <button class="compliance-copy" onclick="copyComplianceNote()" data-i18n="complianceCopy">Copy note</button>
-      </div>
-
+      <div class="learning-badge" id="learningBadge">Awaiting booking</div>
     </div>
 
   </div>
@@ -1483,135 +741,16 @@ tbody tr.new-row{
 <!-- TOAST -->
 
 <div id="toast">
-
   <span class="dot"></span>
-
   <span id="toastMsg"></span>
-
 </div>
 
 
 <script>
 
 let chartInstance = null;
-let lastRunData = null;
-let lastRunType = null;
-
-
-/* ---------- I18N ---------- */
-
-const I18N = {
-
-  en: {
-    title: "FreightCompass",
-    subtitle: "SIH 2026 · Problem ID SIH26006 · Team Stacked Brainers",
-    portal: "SAIL Procurement Portal",
-    advisory: "Freight Strategy Advisory",
-    origin: "ORIGIN — type or pick",
-    destination: "DESTINATION — type or pick",
-    cargoLabel: "Coking Coal",
-    vesselLabel: "Vessel / deck class",
-    tonnageLabel: "Cargo tonnage",
-    deliveryLabel: "Delivery date",
-    scenarioLabel: "Market scenario (demo input)",
-    runBtn: "Run AI Analysis",
-    aiRec: "AI RECOMMENDATION",
-    costLabel: "COST",
-    riskLabel: "DOWNSIDE RISK",
-    confLabel: "CONFIDENCE",
-    whyHeading: "Why the model recommends this",
-    forecastHeading: "Freight cost forecast ($ / ton)",
-    riskHeading: "East Coast risk monitor",
-    allocHeading: "Annual freight allocation",
-    allocFixed: "Fixed",
-    allocQuarterly: "Quarterly",
-    allocSpot: "Spot",
-    auditHeading: "Auditable decision trail",
-    auditSub: "Every recommendation and manager action is logged for procurement compliance.",
-    colTime: "Time",
-    colShipment: "Shipment ID",
-    colStrategy: "AI strategy",
-    colAction: "Action taken",
-    colStatus: "Status",
-    learnHeading: "LEARN FROM RESULTS",
-    predicted: "Predicted",
-    actual: "Actual",
-    variance: "Variance",
-    awaitingBooking: "Awaiting booking",
-    complianceHeading: "Vigilance justification note",
-    complianceSub: "Auto-drafts the CVC/GFR-compliant paragraph explaining why this booking is defensible even when it is not the lowest quoted price.",
-    complianceBtn: "Generate justification note",
-    complianceBoxTitle: "DRAFT — FOR PROCUREMENT FILE",
-    complianceCopy: "Copy note",
-  },
-
-  hi: {
-    title: "फ्रेट कंपास",
-    subtitle: "एसआईएच 2026 · समस्या आईडी SIH26006 · टीम स्टैक्ड ब्रेनर्स",
-    portal: "सेल खरीद पोर्टल",
-    advisory: "माल ढुलाई रणनीति सलाह",
-    origin: "प्रस्थान बंदरगाह — टाइप करें या चुनें",
-    destination: "गंतव्य बंदरगाह — टाइप करें या चुनें",
-    cargoLabel: "कोकिंग कोयला",
-    vesselLabel: "पोत / डेक श्रेणी",
-    tonnageLabel: "माल टनभार",
-    deliveryLabel: "डिलीवरी तिथि",
-    scenarioLabel: "बाज़ार परिदृश्य (डेमो इनपुट)",
-    runBtn: "एआई विश्लेषण चलाएँ",
-    aiRec: "एआई सिफारिश",
-    costLabel: "लागत",
-    riskLabel: "जोखिम",
-    confLabel: "विश्वास स्तर",
-    whyHeading: "मॉडल यह सिफारिश क्यों करता है",
-    forecastHeading: "माल ढुलाई लागत पूर्वानुमान ($ / टन)",
-    riskHeading: "पूर्वी तट जोखिम मॉनिटर",
-    allocHeading: "वार्षिक माल ढुलाई आवंटन",
-    allocFixed: "निश्चित",
-    allocQuarterly: "त्रैमासिक",
-    allocSpot: "स्पॉट",
-    auditHeading: "लेखा-परीक्षा योग्य निर्णय ट्रेल",
-    auditSub: "अनुपालन के लिए हर सिफारिश और प्रबंधक कार्रवाई दर्ज की जाती है।",
-    colTime: "समय",
-    colShipment: "शिपमेंट आईडी",
-    colStrategy: "एआई रणनीति",
-    colAction: "की गई कार्रवाई",
-    colStatus: "स्थिति",
-    learnHeading: "परिणामों से सीख",
-    predicted: "अनुमानित",
-    actual: "वास्तविक",
-    variance: "अंतर",
-    awaitingBooking: "बुकिंग की प्रतीक्षा",
-    complianceHeading: "सतर्कता औचित्य नोट",
-    complianceSub: "CVC/GFR-अनुरूप पैराग्राफ स्वतः तैयार करता है, जो बताता है कि सबसे कम कीमत न होने पर भी यह बुकिंग उचित क्यों है।",
-    complianceBtn: "औचित्य नोट तैयार करें",
-    complianceBoxTitle: "मसौदा — खरीद फ़ाइल हेतु",
-    complianceCopy: "नोट कॉपी करें",
-  }
-
-};
-
-let currentLang = 'en';
-
-function setLang(lang){
-
-  currentLang = lang;
-
-  document.getElementById('langEnBtn').classList.toggle('active', lang === 'en');
-  document.getElementById('langHiBtn').classList.toggle('active', lang === 'hi');
-
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (I18N[lang][key]) el.textContent = I18N[lang][key];
-  });
-
-  document.documentElement.lang = lang;
-}
-
-
-/* ---------- PORT DATA ---------- */
 
 const ORIGIN_PORTS = [
-
   { code:"AU", name:"Newcastle" },
   { code:"AU", name:"Gladstone" },
   { code:"AU", name:"Hay Point" },
@@ -1620,258 +759,143 @@ const ORIGIN_PORTS = [
   { code:"US", name:"Norfolk" },
   { code:"CA", name:"Vancouver" },
   { code:"ZA", name:"Richards Bay" }
-
 ];
 
-
 const DEST_PORTS = [
-
   { code:"IN", name:"Dhamra" },
   { code:"IN", name:"Paradip" },
   { code:"IN", name:"Visakhapatnam" },
   { code:"IN", name:"Haldia" },
   { code:"IN", name:"Krishnapatnam" },
   { code:"IN", name:"Mundra" }
-
 ];
 
-// East Coast ports for risk monitoring — kept in sync with DEST_PORTS above
-// so a port added there doesn't silently fall outside this check.
-const EAST_COAST_PORTS = ["Dhamra", "Paradip", "Visakhapatnam", "Haldia", "Krishnapatnam"];
-
-
-/* ---------- VESSEL COST ADJUSTMENT ---------- */
-// Smaller vessels lose economies of scale, so illustratively nudge $/ton up
-// as vessel class shrinks. Capesize is the baseline (no adjustment).
-const VESSEL_ADJUSTMENT = {
-  Capesize: 0,
-  Panamax: 0.35,
-  Supramax: 0.70,
-  Handymax: 0.95,
-  Handysize: 1.30
-};
-
-function adjustCostRange(costStr, vessel){
-
-  const bump = VESSEL_ADJUSTMENT[vessel] || 0;
-
-  const nums = costStr.match(/[\d.]+/g);
-  if(!nums || nums.length < 2) return costStr;
-
-  const low = (parseFloat(nums[0]) + bump).toFixed(2);
-  const high = (parseFloat(nums[1]) + bump).toFixed(2);
-
-  return `$${low} – $${high} / ton`;
-}
-
-
-/* ---------- POPULATE PORTS ---------- */
-
 function populatePorts(){
-
   const originList = document.getElementById('originList');
   const destList = document.getElementById('destList');
 
-  originList.innerHTML = ORIGIN_PORTS.map(
-    p => `<option value="${p.code} · ${p.name}"></option>`
-  ).join('');
-
-  destList.innerHTML = DEST_PORTS.map(
-    p => `<option value="${p.code} · ${p.name}"></option>`
-  ).join('');
+  originList.innerHTML = ORIGIN_PORTS.map(p => `<option value="${p.code} · ${p.name}"></option>`).join('');
+  destList.innerHTML = DEST_PORTS.map(p => `<option value="${p.code} · ${p.name}"></option>`).join('');
 
   document.getElementById('originSelect').value = "AU · Newcastle";
   document.getElementById('destSelect').value = "IN · Dhamra";
-
 }
-
-
-/* ---------- ROUTE UPDATE ---------- */
 
 function updateRoute(){
-
   const tonnage = document.getElementById('tonnageInput').value || '—';
-
-  document.getElementById('cargoTonnageDisplay').innerText = tonnage;
-
+  document.querySelector('.route .cargo b').innerText = tonnage;
   document.getElementById('output').classList.remove('show');
-
-  document.getElementById('complianceBtn').disabled = true;
-  document.getElementById('complianceBox').classList.remove('show');
-
 }
-
-
-/* ---------- DEFAULT DATE ---------- */
 
 function setDefaultDeliveryDate(){
-
   const d = new Date();
   d.setDate(d.getDate() + 30);
-
   document.getElementById('deliveryDate').value = d.toISOString().split('T')[0];
-
 }
-
-
-/* ---------- DELIVERY URGENCY ---------- */
-
-function getDeliveryUrgency(){
-
-  const val = document.getElementById('deliveryDate').value;
-  if(!val) return null;
-
-  const target = new Date(val);
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  const days = Math.round((target - today) / 86400000);
-
-  if(isNaN(days)) return null;
-
-  return days;
-
-}
-
 
 populatePorts();
 updateRoute();
 setDefaultDeliveryDate();
 
-
-/* ---------- SCENARIOS ---------- */
-
 const scenarios = {
 
-
   WAIT:{
-
     status:"Wait — delay booking",
     barColor:"var(--steel)",
     cost:"$12.80 – $13.50 / ton",
     risk:"LOW",
     confidence:"91%",
-
     drivers:[
-      { color:"var(--teal)",  label:"Rate trend",          text:"Spot rates fell 5% over the past 7 days." },
-      { color:"var(--teal)",  label:"Vessel availability", text:"Bulk carrier supply is increasing across Asia routes." },
-      { color:"var(--steel)", label:"Port congestion",     text:"Waiting times at Dhamra are easing toward normal." },
-      { color:"var(--steel)", label:"Feasibility",         text:"__VESSEL__ vessel fits destination draft limits." }
+      { color:"var(--teal)", label:"Rate trend", text:"Spot rates fell 5% over the past 7 days." },
+      { color:"var(--teal)", label:"Vessel availability", text:"Bulk carrier supply is increasing across Asia routes." },
+      { color:"var(--steel)", label:"Port congestion", text:"Waiting times at Dhamra are easing toward normal." },
+      { color:"var(--steel)", label:"Feasibility", text:"__VESSEL__ vessel fits destination draft limits." }
     ],
-
-    chartData:[15.2, 14.8, 14.1, 13.5, 13.0, 12.8],
-
+    chartData:[15.2,14.8,14.1,13.5,13.0,12.8],
     heading:"Hold off booking until the price target is met",
     desc:"Set a rate alert, or confirm manually once the market bottoms out.",
-
-    baseAllocation: { fixed: 55, quarterly: 25, spot: 20 },
-
     buttons:`
       <button class="btn btn-primary" onclick="confirmBooking('Price drop confirmed — booked at $12.90/ton')">Price dropped — confirm &amp; book</button>
       <button class="btn btn-secondary" onclick="recordAudit('Price alert set at $12.80/ton','Monitoring')">Set price alert</button>
     `
-
   },
 
-
   LOCK:{
-
     status:"Lock now — book 100%",
     barColor:"var(--amber)",
     cost:"$16.40 – $17.10 / ton",
     risk:"HIGH",
     confidence:"94%",
-
     drivers:[
-      { color:"var(--red)",   label:"Bunker fuel",     text:"Prices are surging sharply on geopolitical risk." },
-      { color:"var(--red)",   label:"Port congestion", text:"Heavy congestion is forecast at eastern Indian ports." },
-      { color:"var(--amber)", label:"Tight capacity",  text:"Few suitable vessels remain available next week." },
-      { color:"var(--steel)", label:"Feasibility",     text:"__VESSEL__ vessel fits berth beam and depth limits." }
+      { color:"var(--red)", label:"Bunker fuel", text:"Prices are surging sharply on geopolitical risk." },
+      { color:"var(--red)", label:"Port congestion", text:"Heavy congestion is forecast at eastern Indian ports." },
+      { color:"var(--amber)", label:"Tight capacity", text:"Few suitable vessels remain available next week." },
+      { color:"var(--steel)", label:"Feasibility", text:"Selected vessel fits berth beam and depth limits." }
     ],
-
-    chartData:[13.5, 14.2, 15.0, 16.4, 17.2, 18.0],
-
+    chartData:[13.5,14.2,15.0,16.4,17.2,18.0],
     heading:"Secure full capacity now to avoid further loss",
     desc:"Freight rates are projected to keep climbing over the next 14 days.",
-
-    baseAllocation: { fixed: 70, quarterly: 22, spot: 8 },
-
     buttons:`
       <button class="btn btn-primary" onclick="confirmBooking('100% capacity locked instantly')">Approve — lock 100% now</button>
     `
-
   },
 
-
   PARTIAL:{
-
     status:"Partial lock — book 40%",
     barColor:"var(--amber)",
     cost:"$14.20 – $15.50 / ton",
     risk:"MEDIUM",
     confidence:"87%",
-
     drivers:[
       { color:"var(--amber)", label:"Market uncertainty", text:"Fuel prices are volatile, but vessel supply is stable." },
-      { color:"var(--amber)", label:"Risk mitigation",    text:"Locking 40% covers base demand and leaves 60% flexible." },
-      { color:"var(--steel)", label:"Port limits",        text:"Draft requirements are confirmed for Dhamra berth 2." },
-      { color:"var(--steel)", label:"Annual alignment",   text:"Fits within the quarterly spot allocation limit." }
+      { color:"var(--amber)", label:"Risk mitigation", text:"Locking 40% covers base demand and leaves 60% flexible." },
+      { color:"var(--steel)", label:"Port limits", text:"Draft requirements are confirmed for Dhamra berth 2." },
+      { color:"var(--steel)", label:"Annual alignment", text:"Fits within the quarterly spot allocation limit." }
     ],
-
-    chartData:[13.2, 13.5, 13.8, 14.2, 14.9, 15.4],
-
+    chartData:[13.2,13.5,13.8,14.2,14.9,15.4],
     heading:"Split exposure between locked and flexible capacity",
     desc:"Lock part of the order now and hold the rest until the market steadies.",
-
-    baseAllocation: { fixed: 60, quarterly: 25, spot: 15 },
-
     buttons:`
       <button class="btn btn-primary" onclick="confirmBooking('Partial lock (40%) approved')">Approve 40% lock</button>
       <button class="btn btn-secondary" onclick="recordAudit('Overridden — manual 100% lock','Overridden')">Manual override</button>
     `
-
   }
 
 };
 
+function getPortRisk(destination,scenario){
 
-/* ---------- EAST COAST RISK ---------- */
-
-function getPortRisk(destination, scenario){
-
-  const eastCoast = EAST_COAST_PORTS.some(p => destination.includes(p));
+  const eastCoast =
+    destination.includes("Dhamra") ||
+    destination.includes("Paradip") ||
+    destination.includes("Visakhapatnam") ||
+    destination.includes("Haldia");
 
   if(!eastCoast){
-
     return{
       cyclone:"LOW",
       congestion: scenario === "LOCK" ? "HIGH" : "MODERATE",
       seasonal:"LOW",
       note:"Destination is outside the core East Coast risk set."
     };
-
   }
 
   if(scenario === "LOCK"){
-
     return{
       cyclone:"MODERATE",
       congestion:"HIGH",
       seasonal:"WATCH",
       note:"East Coast seasonal disruption is included in the decision."
     };
-
   }
 
   if(scenario === "PARTIAL"){
-
     return{
       cyclone:"MODERATE",
       congestion:"MODERATE",
       seasonal:"WATCH",
       note:"Partial locking balances freight exposure against port disruption risk."
     };
-
   }
 
   return{
@@ -1882,9 +906,6 @@ function getPortRisk(destination, scenario){
   };
 
 }
-
-
-/* ---------- DISPLAY RISK ---------- */
 
 function renderPortRisk(scenario){
 
@@ -1898,112 +919,49 @@ function renderPortRisk(scenario){
   };
 
   document.getElementById('riskPanel').innerHTML = `
-
     <div class="risk-row">
       <span class="risk-name">🌪 Cyclone exposure</span>
       <span class="risk-value ${cls(risk.cyclone)}">${risk.cyclone}</span>
     </div>
-
     <div class="risk-row">
       <span class="risk-name">⚓ Port congestion</span>
       <span class="risk-value ${cls(risk.congestion)}">${risk.congestion}</span>
     </div>
-
     <div class="risk-row">
       <span class="risk-name">📅 Seasonal disruption</span>
       <span class="risk-value ${cls(risk.seasonal)}">${risk.seasonal}</span>
     </div>
-
     <div class="risk-note">${risk.note}</div>
-
   `;
 
-  return risk;
-
 }
-
-
-/* ---------- ANNUAL ALLOCATION ---------- */
-
-function renderAllocation(data){
-
-  const mix = { ...data.baseAllocation };
-
-  // High-risk scenarios shift the mix toward Fixed (less Spot exposure);
-  // low-risk scenarios allow more Spot flexibility. Base mix per scenario
-  // already reflects this; here we just render + note why.
-  document.getElementById('allocFixedPct').innerText = mix.fixed + '%';
-  document.getElementById('allocQuarterlyPct').innerText = mix.quarterly + '%';
-  document.getElementById('allocSpotPct').innerText = mix.spot + '%';
-
-  document.getElementById('allocFixedBar').style.width = mix.fixed + '%';
-  document.getElementById('allocQuarterlyBar').style.width = mix.quarterly + '%';
-  document.getElementById('allocSpotBar').style.width = mix.spot + '%';
-
-  const noteByRisk = {
-    HIGH: "High downside risk shifts the mix toward Fixed contracts to limit spot-market exposure.",
-    MEDIUM: "Moderate risk keeps a balanced mix — enough Fixed cover with room for Spot opportunism.",
-    LOW: "Low downside risk allows a larger Spot allocation to capture favorable short-term rates."
-  };
-
-  document.getElementById('allocationNote').innerText = noteByRisk[data.risk] || '';
-
-}
-
-
-/* ---------- RUN ANALYSIS ---------- */
 
 function runAnalysis(){
 
   const type = document.getElementById('scenarioSelect').value;
-  const data = { ...scenarios[type] };
-
-  const vessel = document.getElementById('vesselSelect').value;
-  const urgencyDays = getDeliveryUrgency();
-
-  // Vessel-adjusted cost range
-  data.cost = adjustCostRange(scenarios[type].cost, vessel);
+  const data = scenarios[type];
 
   document.getElementById('output').classList.add('show');
-
   document.getElementById('statusText').innerText = data.status;
   document.querySelector('.banner').style.borderLeftColor = data.barColor;
   document.getElementById('costVal').innerText = data.cost;
 
   const riskVal = document.getElementById('riskVal');
   riskVal.innerText = data.risk;
-  riskVal.className = 'metric-value ' +
-    (data.risk === 'HIGH' ? 'risk-high' : data.risk === 'MEDIUM' ? 'risk-medium' : 'risk-low');
+  riskVal.className = 'metric-value ' + (data.risk === 'HIGH' ? 'risk-high' : data.risk === 'MEDIUM' ? 'risk-medium' : 'risk-low');
 
   document.getElementById('confidenceVal').innerText = data.confidence;
 
-  // Build driver list, substituting vessel, and append a delivery-urgency
-  // driver line when the date is tight.
-  let drivers = data.drivers.map(d => ({
-    color: d.color,
-    label: d.label,
-    text: d.text.replace('__VESSEL__', vessel)
-  }));
+  const vessel = document.getElementById('vesselSelect').value;
 
-  if(urgencyDays !== null && urgencyDays <= 14){
-
-    drivers.push({
-      color: urgencyDays <= 7 ? "var(--red)" : "var(--amber)",
-      label: "Delivery urgency",
-      text: urgencyDays < 0
-        ? `Requested delivery date has already passed — booking cannot wait.`
-        : `Delivery in ${urgencyDays} day${urgencyDays === 1 ? '' : 's'} — limited window to wait for a better rate.`
-    });
-
-  }
-
-  document.getElementById('driversList').innerHTML = drivers.map(d => `
-
+  document.getElementById('driversList').innerHTML = data.drivers.map(d => `
     <div class="driver">
       <span class="dot" style="background:${d.color}"></span>
-      <span><b>${d.label}.</b> <span>${d.text}</span></span>
+      <span>
+        <b>${d.label}.</b>
+        <span>${d.text.replace('__VESSEL__', vessel)}</span>
+      </span>
     </div>
-
   `).join('');
 
   document.getElementById('actionHeading').innerText = data.heading;
@@ -2011,19 +969,9 @@ function runAnalysis(){
   document.getElementById('actionButtons').innerHTML = data.buttons;
 
   renderPortRisk(type);
-  renderAllocation(data);
   renderChart(data.chartData, data.barColor);
 
-  lastRunData = data;
-  lastRunType = type;
-
-  document.getElementById('complianceBtn').disabled = false;
-  document.getElementById('complianceBox').classList.remove('show');
-
 }
-
-
-/* ---------- BOOKING ---------- */
 
 function confirmBooking(actionName){
 
@@ -2031,14 +979,20 @@ function confirmBooking(actionName){
 
   const scenario = document.getElementById('scenarioSelect').value;
 
-  let actual, predicted;
+  let actual;
+  let predicted;
 
   if(scenario === 'LOCK'){
-    actual = '$16.70/t'; predicted = '$16.40/t';
-  } else if(scenario === 'PARTIAL'){
-    actual = '$14.35/t'; predicted = '$14.20/t';
-  } else {
-    actual = '$12.84/t'; predicted = '$12.90/t';
+    actual = '$16.70/t';
+    predicted = '$16.40/t';
+  }
+  else if(scenario === 'PARTIAL'){
+    actual = '$14.35/t';
+    predicted = '$14.20/t';
+  }
+  else{
+    actual = '$12.84/t';
+    predicted = '$12.90/t';
   }
 
   const p = parseFloat(predicted.replace('$','').replace('/t',''));
@@ -2058,16 +1012,11 @@ function confirmBooking(actionName){
 
 }
 
-
-/* ---------- AUDIT ---------- */
-
 function recordAudit(actionText, statusTag){
 
   const table = document.getElementById('auditTable');
-
   const time = new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
   const randomID = 'SH-2026-0' + Math.floor(10 + Math.random()*90);
-
   const strategy = document.getElementById('statusText').innerText.split(' ')[0].toUpperCase();
 
   const pillClass =
@@ -2090,65 +1039,9 @@ function recordAudit(actionText, statusTag){
 
 }
 
-
-/* ---------- COMPLIANCE NOTE ---------- */
-
-function generateComplianceNote(){
-
-  if(!lastRunData) return;
-
-  const data = lastRunData;
-  const origin = document.getElementById('originSelect').value;
-  const dest = document.getElementById('destSelect').value;
-  const vessel = document.getElementById('vesselSelect').value;
-  const tonnage = document.getElementById('tonnageInput').value;
-  const risk = renderPortRisk(lastRunType);
-
-  const dateStr = new Date().toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' });
-
-  const reasonLines = [];
-
-  if(data.risk === 'HIGH'){
-    reasonLines.push(`avoid an estimated exposure to further freight escalation, given ${risk.congestion.toLowerCase()} port congestion and ${risk.cyclone.toLowerCase()} cyclone-season risk at the destination`);
-  } else if(data.risk === 'MEDIUM'){
-    reasonLines.push(`balance cost against ${risk.seasonal.toLowerCase()}-status seasonal disruption risk at the destination port`);
-  } else {
-    reasonLines.push(`defer commitment while monitoring a ${risk.congestion.toLowerCase()}-congestion, ${risk.cyclone.toLowerCase()}-cyclone-exposure destination for a more favorable rate`);
-  }
-
-  const note =
-`Shipment: ${origin} → ${dest} | ${tonnage} coking coal | ${vessel} class
-Recommendation: ${data.status} (model confidence ${data.confidence})
-Target freight cost: ${data.cost} | Downside risk classification: ${data.risk}
-
-Justification: This booking strategy was selected to ${reasonLines[0]}. The FreightCompass advisory system evaluated current spot-rate trend, vessel availability, port congestion, and East Coast seasonal risk factors before generating this recommendation. Where this action does not correspond to the lowest quoted freight rate at time of decision, the premium (if any) is considered justified on the grounds of reduced demurrage risk, schedule reliability, and consistency with SAIL's annual freight allocation policy (Fixed/Quarterly/Spot mix).
-
-This note is system-generated for procurement file records and is subject to review under applicable CVC/GFR guidelines. Prepared: ${dateStr}.`;
-
-  document.getElementById('complianceText').innerText = note;
-  document.getElementById('complianceBox').classList.add('show');
-
-}
-
-function copyComplianceNote(){
-
-  const text = document.getElementById('complianceText').innerText;
-
-  if(navigator.clipboard){
-    navigator.clipboard.writeText(text).then(() => showToast('Justification note copied to clipboard'));
-  } else {
-    showToast('Copy not supported in this browser');
-  }
-
-}
-
-
-/* ---------- TOAST ---------- */
-
 function showToast(msg){
 
   const toast = document.getElementById('toast');
-
   document.getElementById('toastMsg').innerText = msg + ' — recorded in the decision trail.';
 
   toast.classList.add('show');
@@ -2158,9 +1051,6 @@ function showToast(msg){
 
 }
 
-
-/* ---------- CHART ---------- */
-
 function renderChart(chartData, accent){
 
   const ctx = document.getElementById('rateChart').getContext('2d');
@@ -2168,19 +1058,12 @@ function renderChart(chartData, accent){
   if(chartInstance) chartInstance.destroy();
 
   const style = getComputedStyle(document.documentElement);
-
-  const resolvedAccent = accent.startsWith('var(')
-    ? style.getPropertyValue(accent.slice(4,-1)).trim()
-    : accent;
+  const resolvedAccent = accent.startsWith('var(') ? style.getPropertyValue(accent.slice(4,-1)).trim() : accent;
 
   chartInstance = new Chart(ctx, {
-
     type:'line',
-
     data:{
-
       labels:['W1','W2','W3','W4 (now)','W5 (fcst)','W6 (fcst)'],
-
       datasets:[{
         label:'$ / ton',
         data:chartData,
@@ -2191,29 +1074,20 @@ function renderChart(chartData, accent){
         tension:0.3,
         borderWidth:2
       }]
-
     },
-
     options:{
-
       plugins:{ legend:{ display:false } },
-
       scales:{
-
         x:{
           ticks:{ color:'#8FA3AF', font:{ family:'IBM Plex Mono', size:10.5 } },
           grid:{ color:'#1D2A33' }
         },
-
         y:{
           ticks:{ color:'#8FA3AF', font:{ family:'IBM Plex Mono', size:10.5 } },
           grid:{ color:'#1D2A33' }
         }
-
       }
-
     }
-
   });
 
 }
